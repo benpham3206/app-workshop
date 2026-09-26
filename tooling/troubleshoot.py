@@ -26,6 +26,9 @@ def build_guide(config):
         "1. Reproduce the symptom and record OS, device, build, account, and network state.",
         "2. Follow the checks for the matching symptom; preserve the exact error or log.",
         "3. Add the confirmed cause, fix, and regression check to the project issue or support note.",
+        "4. If the cause is in Apple's code, reduce it to a sample project, file it in "
+        "[Feedback Assistant](https://developer.apple.com/bug-reporting/), and record the FB number "
+        "beside the workaround.",
         "",
     ]
     for rule in catalog["rules"]:

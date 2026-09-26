@@ -1,16 +1,22 @@
 PYTHON ?= python3
 CONFIG ?= examples/neutral-preview/project.json
 OUTPUT ?= dist/neutral-preview
+STARTER ?=
+PROJECT ?=
+APPLY ?=
 ICON_BRIEF ?= dist/neutral-preview/design/icon-brief.json
 ICON_OUTPUT ?= dist/neutral-preview/docs/design/ICON-PLAN.md
 
-.PHONY: validate generate troubleshoot icon-plan process-guide verify
+.PHONY: validate generate update troubleshoot icon-plan process-guide verify verify-xcode
 
 validate:
 	$(PYTHON) tooling/scaffold.py validate --config "$(CONFIG)"
 
 generate:
-	$(PYTHON) tooling/scaffold.py generate --config "$(CONFIG)" --output "$(OUTPUT)"
+	$(PYTHON) tooling/scaffold.py generate --config "$(CONFIG)" --output "$(OUTPUT)" $(if $(STARTER),--starter "$(STARTER)")
+
+update:
+	$(PYTHON) tooling/scaffold.py update --project "$(PROJECT)" $(if $(APPLY),--apply)
 
 troubleshoot:
 	$(PYTHON) tooling/troubleshoot.py --config "$(CONFIG)"
@@ -23,3 +29,6 @@ process-guide:
 
 verify:
 	$(PYTHON) -m unittest discover -s tests/generation -v
+
+verify-xcode:
+	APP_WORKSHOP_XCODE=1 $(PYTHON) -m unittest discover -s tests/generation -v

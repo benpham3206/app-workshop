@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "rule": "A gate is open or done. A done gate must name evidence files that exist in this project. Keep a gate open when its check was not run, even if related work is finished.",
+  "gates": [
+    {
+      "id": "product-brief",
+      "question": "Does docs/product/BRIEF.md name the user, the job, and the first useful result?",
+      "status": "open",
+      "evidence": []
+    },
+    {
+      "id": "first-flow",
+      "question": "Does docs/ux/FLOWS.md show the first flow from launch to result, including its failure path?",
+      "status": "open",
+      "evidence": []
+    },
+    {
+      "id": "simulator-launch",
+      "question": "Does the app build and launch in Simulator?",
+      "status": "open",
+      "evidence": []
+    },
+    {
+      "id": "vertical-slice",
+      "question": "Does the first task complete with success, failure, and recovery, and do its state tests pass?",
+      "status": "open",
+      "evidence": []
+    },
+    {
+      "id": "device-journey",
+      "question": "Does the first journey run on the primary physical device, with a recorded launch and interaction baseline?",
+      "status": "open",
+      "evidence": []
+    },
+    {
+      "id": "native-review",
+      "question": "Is docs/design/NATIVE-REVIEW.md complete for each selected platform?",
+      "status": "open",
+      "evidence": []
+    },
+    {
+      "id": "privacy",
+      "question": "Do permissions, collected data, SDKs, and the privacy manifest match the App Store privacy answers?",
+      "status": "open",
+      "evidence": []
+    },
+    {
+      "id": "release",
+      "question": "Is docs/release/CHECKLIST.md complete for this release?",
+      "status": "open",
+      "evidence": []
+    }
+  ]
+}

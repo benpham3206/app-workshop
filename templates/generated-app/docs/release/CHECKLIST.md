@@ -11,6 +11,10 @@ Complete this for the actual app and supported regions. Treat unchecked items as
 - [ ] Prepare truthful metadata, screenshots, support and privacy URLs, and reviewer access.
 - [ ] Determine encryption export requirements and any category-specific rules.
 - [ ] Test a final build with appropriate beta distribution before submission.
+- [ ] Archive with a released Xcode and SDK that meet App Store Connect's current minimum; check [upcoming requirements](https://developer.apple.com/news/upcoming-requirements/) for new dates.
+- [ ] Answer the current age rating questions in App Store Connect.
+- [ ] Declare Accessibility Nutrition Labels only for features that pass Apple's evaluation criteria.
+- [ ] Plan for no rollback: the previous version can read data this version writes, phased release is on, and a fix-forward build path is ready.
 - [ ] Resolve the current OS and device decisions in `docs/compatibility/REVIEW.md`; align the support claim with tested evidence.
 - [ ] If distributing a Mac app directly, verify Developer ID signing, hardened runtime, notarization, packaging, update delivery, and support for that route.
 - [ ] Confirm support contact, issue triage, crash monitoring, and a way to ship fixes after launch.

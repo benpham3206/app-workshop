@@ -1,6 +1,6 @@
 # Xcode project setup decisions
 
-Complete when a product and first target are selected. The scaffold does not create or sign an app.
+Complete when a product and first target are selected. The `--starter ios` project creates an unsigned app with the bundle ID `com.example.<slug>`; replace it and choose a team before device builds. Without a starter, the scaffold does not create an app.
 
 | Decision | Value | Evidence |
 | --- | --- | --- |
