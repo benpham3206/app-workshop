@@ -23,11 +23,12 @@ This is the implementation contract when a product becomes code. The scaffold ca
 ## Privacy and security gates
 
 1. Start with no extra entitlement, background mode, SDK, account, analytics, or network dependency. Add one only for a selected user job, record its data flow, and test denial or absence.
-2. Keep credentials out of the repository, logs, previews, and screenshots. Use system credential storage for secrets when a product actually needs them; do not invent encryption around a hard-coded key.
+2. Keep credentials and signing assets (`.p8` API and push keys, `.p12` certificates, provisioning profiles, `.env` files) out of the repository, logs, previews, and screenshots. `make check` fails when one is tracked by Git. Use system credential storage for secrets when a product actually needs them; do not invent encryption around a hard-coded key.
 3. Validate external input at the boundary: deep-link destinations, imported files, server data, and URL hosts. Give errors a safe recovery path without printing private content.
-4. Keep permission prompts close to the action that needs access. The app must still explain or offer useful work after denial.
-5. For a Mac App Store target, use the [App Sandbox](https://developer.apple.com/documentation/security/protecting-user-data-with-app-sandbox) and grant only needed capabilities. Verify the entitlements in the signed build. App Workshop's local bundle uses a sandbox entitlement as a concrete example.
-6. Reconcile actual collection, SDK behavior, storage, sharing, deletion, and account behavior with the privacy plan and App Store declarations before release.
+4. Treat model output as untrusted input. An on-device model, a server model, an App Intent parameter, or a coding agent may propose an action; app code decides whether it is allowed. For a privileged action, follow this order: intent, identity, capability, policy, validation, execution, audit. Fail closed when any step cannot establish permission.
+5. Keep permission prompts close to the action that needs access. The app must still explain or offer useful work after denial.
+6. For a Mac App Store target, use the [App Sandbox](https://developer.apple.com/documentation/security/protecting-user-data-with-app-sandbox) and grant only needed capabilities. Verify the entitlements in the signed build. App Workshop's local bundle uses a sandbox entitlement as a concrete example.
+7. Reconcile actual collection, SDK behavior, storage, sharing, deletion, and account behavior with the privacy plan and App Store declarations before release.
 
 ## Responsiveness gates
 

@@ -1,0 +1,27 @@
+name: Bug
+description: A confirmed or suspected defect.
+labels: [bug]
+body:
+  - type: textarea
+    id: observed
+    attributes:
+      label: Observed and expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Include device model, OS version, app build, and Simulator or physical device.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: Logs, screenshots, crash report, or sysdiagnose. Remove personal data first.
+  - type: textarea
+    id: cause
+    attributes:
+      label: Root cause and recurrence defense
+      description: Fill in when fixed. Which type, validation, test, or boundary stops this class of defect? Does the lesson belong in the factory? If Apple's code is at fault, add the Feedback Assistant number.

@@ -1,4 +1,27 @@
-# Workboard and decision log
+# Status, workboard, and decision log
+
+Keep this short and current. It is the first thing a new agent reads after the brief.
+
+## Status
+
+| Field | Now |
+| --- | --- |
+| Current goal | First useful result |
+| Current bottleneck | Name the one constraint that most directly blocks the goal. |
+| Next smallest step | One step that reduces the bottleneck, with its check. |
+| Security or privacy risk | Write `None known` only after review. |
+| Active migration | Old path, new path, how it is verified, and the rollback point; or `None`. |
+| Accepted regressions | Owner and exit condition; or `None`. |
+
+## Capabilities
+
+Levels: absent, works, reliable, observable, efficient, resilient. The goal and risk set the required level.
+
+| Capability | Current | Required | Evidence |
+| --- | --- | --- | --- |
+| First useful result | absent | reliable | |
+
+## Tasks
 
 Keep one active milestone small enough to demonstrate. Move tasks only when acceptance evidence exists.
 

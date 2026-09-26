@@ -41,6 +41,14 @@ make test                     # Swift Testing state tests
 
 The starter is an Xcode project with synchronized folders, so new Swift files in `App/` or `AppTests/` build without project-file edits. It uses Swift 6 language mode, a `Logger`, and one task owner with tests for duplicate taps and failure recovery. `make verify-xcode` runs the same generate-and-test check from this factory.
 
+To add the planning and operating layer to an app that already exists, adopt it:
+
+```sh
+make adopt CONFIG=path/to/project.json PROJECT=path/to/app
+```
+
+ADOPT never touches app code. It keeps an existing `README.md`, `Makefile`, `.gitignore`, and `.github/` files, appends the generated rules to an existing `AGENTS.md`, and stops before writing anything if any other generated path already exists. Kept and merged files are recorded as unmanaged, so `update` leaves them alone.
+
 To adopt later factory fixes in an existing app, run a dry run first:
 
 ```sh
@@ -55,6 +63,9 @@ Each generated project includes `make check` and `make icon-plan`. Run `make che
 The configuration contract is in `config/schema/project.schema.json`. The CLI performs its own selection checks; the JSON Schema is provided for editors and external tooling.
 
 ## Learn the system
+
+The change discipline, verification ladder, defect loop, capability levels, agent roles, and authority rules are adapted from [agent-engineering](https://github.com/benpham3206/agent-engineering) for Apple apps. So are ADOPT, the tracked-secret check, and the generated CI and pull request template.
+
 
 1. Read `docs/research/apple-guideline-audit.md` for Apple guidance and open questions.
    Follow `docs/process/START-TO-SHIP.md` for the full learning path.

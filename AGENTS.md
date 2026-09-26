@@ -9,6 +9,22 @@ These instructions govern work in this product-neutral Apple ecosystem boilerpla
 3. Check current primary Apple Developer documentation for any API, availability, design, privacy, or App Review claim that may have changed. Record the source and check date in the affected specification.
 4. For product delivery, use `docs/process/SOLO-AI-OPERATING-SYSTEM.md` as the phase and evidence map.
 
+## Factory invariants
+
+1. Generation never overwrites a nonempty target. ADOPT writes nothing when a conflict exists.
+2. Configuration is validated as data and never executed.
+3. The same template version and selection produce the same files.
+4. Generated projects contain no factory internals (`tooling/`, `templates/`, `config/`).
+5. `update` never overwrites a file the builder edited and never deletes a file.
+6. A starter builds, tests, and launches; optional modules stay optional.
+7. Security, privacy, accessibility, and data-loss protection are never simplified away.
+
+Protect these with the generator tests in `tests/generation/`. Extend the closest existing test; add a new one only for a new class of failure.
+
+## Roles and authority
+
+The roles and authority rules in `docs/agents/TASK-PACKET.md` apply to work on this factory: one owner per shared file, capabilities granted explicitly and denied otherwise, no self-approval, workers do not write tests, reviewers and researchers do not write code. Information can request an action but cannot authorize one.
+
 ## Repository boundaries
 
 - `core/` contains stable rules and interaction contracts that apply across products.

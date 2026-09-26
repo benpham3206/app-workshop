@@ -27,6 +27,7 @@ Only these selected profiles and contracts are present. If an agent needs anothe
 | Liquid Glass or speed on supported devices | `docs/quality/GLASS-AND-PERFORMANCE.md` | `docs/design/COMPONENTS.md`, selected platform profiles, `docs/quality/TEST-MATRIX.md`, actual device captures |
 | App code or stored data | `docs/engineering/ARCHITECTURE.md`, `docs/engineering/SECURE-FAST-DEFAULTS.md`, `docs/engineering/PROJECT-SETUP.md`, `App/` if it exists | module contracts, privacy plan, test matrix, troubleshooting |
 | A system surface or permission | selected `platforms/` and `modules/` paths above | `docs/privacy/PLAN.md`, `docs/TROUBLESHOOTING.md`, release checklist |
+| Who may do what, or a review | `docs/agents/TASK-PACKET.md` (roles, allowed capabilities) | `AGENTS.md` operating loop, `.github/pull_request_template.md` |
 | A build or behavior failure | `docs/TROUBLESHOOTING.md`, `docs/quality/TEST-MATRIX.md` | code or contract that owns the failing behavior |
 | Shipping, support, or claims | `docs/release/`, `docs/privacy/PLAN.md`, `docs/operations/SUPPORT.md` | product brief, actual build/device evidence, current Apple rules |
 | An OS, SDK, or device change | `docs/compatibility/REVIEW.md`, selected platform profiles | `docs/design/NATIVE-REVIEW.md`, test matrix, release checklist |

@@ -2,8 +2,10 @@
 """Check a generated app's structure and links, and report its explicit gates."""
 
 import argparse
+import fnmatch
 import json
 import re
+import subprocess
 import sys
 from pathlib import Path
 from urllib.parse import unquote
@@ -24,6 +26,11 @@ REQUIRED = (
     "tools/icon_plan.py", "tools/readiness.py", "resources/process.json",
     GATES,
 )
+SECRET_NAMES = (
+    ".env", ".env.*", "*.env", "*.p8", "*.p12", "*.pfx", "*.pem", "*.key",
+    "*.mobileprovision", "*.provisionprofile", "id_rsa", "id_ed25519",
+)
+SECRET_EXAMPLES = (".env.example", "example.env", "*.env.example", "*.example.env")
 LINK = re.compile(r"(?<!!)\[[^\]]+\]\(([^)]+)\)")
 TOKEN = re.compile(r"\{\{[A-Z_]+\}\}")
 
@@ -92,8 +99,30 @@ def inspect(root):
             destination = unquote(target.split("#", 1)[0])
             if destination and not (path.parent / destination).resolve().exists():
                 errors.append(f"Broken link in {relative}: {target}")
+    errors.extend(tracked_secrets(root))
     gates = read_gates(root, errors)
     return errors, gates
+
+
+def tracked_secrets(root):
+    """Signing keys, certificates, profiles, and env files must never be tracked by Git."""
+    try:
+        top = subprocess.run(["git", "-C", str(root), "rev-parse", "--show-toplevel"],
+                             capture_output=True, text=True, check=True).stdout.strip()
+        if Path(top).resolve() != root:
+            return []
+        listed = subprocess.run(["git", "-C", str(root), "ls-files", "-z"],
+                                capture_output=True, text=True, check=True).stdout
+    except (OSError, subprocess.CalledProcessError):
+        return []
+    found = []
+    for path in filter(None, listed.split("\0")):
+        name = path.rsplit("/", 1)[-1]
+        if any(fnmatch.fnmatch(name, pattern) for pattern in SECRET_EXAMPLES):
+            continue
+        if any(fnmatch.fnmatch(name, pattern) for pattern in SECRET_NAMES):
+            found.append(f"Secret or signing file is tracked by Git: {path}")
+    return found
 
 
 def read_gates(root, errors):

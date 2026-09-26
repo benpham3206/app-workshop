@@ -277,6 +277,7 @@ class ScaffoldContracts(unittest.TestCase):
                 if path.is_file() and path.suffix in {".swift", ".pbxproj", ".sh", ".mk"}:
                     self.assertNotIn("{{", path.read_text(), path)
             self.assertEqual(json.loads((output / ".apple-scaffold.json").read_text())["starter"], "ios")
+            self.assertTrue((output / ".github" / "workflows" / "app-tests.yml").is_file())
             checker = subprocess.run([sys.executable, str(output / "tools" / "readiness.py")], cwd=output, capture_output=True, text=True)
             self.assertEqual(checker.returncode, 0, checker.stdout)
 
@@ -330,6 +331,66 @@ class ScaffoldContracts(unittest.TestCase):
             self.assertEqual(edited.read_text(), "The builder's real brief\n")
             again = invoke("update", "--project", output)
             self.assertIn("Would apply 0 change(s); 1 conflict(s)", again.stdout)
+
+
+    def test_check_fails_on_tracked_signing_assets(self):
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "generated"
+            self.assertEqual(invoke("generate", "--config", EXAMPLE, "--output", output).returncode, 0)
+            self.assertTrue((output / ".github" / "pull_request_template.md").is_file())
+            self.assertTrue((output / ".github" / "workflows" / "ci.yml").is_file())
+            self.assertFalse((output / ".github" / "workflows" / "app-tests.yml").exists())
+            git = lambda *args: subprocess.run(["git", "-C", str(output), *args], capture_output=True, check=True)
+            git("init", "-q")
+            (output / ".env.example").write_text("TOKEN=\n")
+            (output / "AuthKey_TEST.p8").write_text("not a real key\n")
+            git("add", "-A")
+            git("add", "-f", "AuthKey_TEST.p8")
+            checker = [sys.executable, str(output / "tools" / "readiness.py")]
+            result = subprocess.run(checker, cwd=output, capture_output=True, text=True)
+            self.assertEqual(result.returncode, 2, result.stdout)
+            self.assertIn("tracked by Git: AuthKey_TEST.p8", result.stdout)
+            self.assertNotIn(".env.example", result.stdout)
+            git("rm", "-q", "--cached", "AuthKey_TEST.p8")
+            clean = subprocess.run(checker, cwd=output, capture_output=True, text=True)
+            self.assertEqual(clean.returncode, 0, clean.stdout)
+
+    def test_adopt_adds_the_layer_without_touching_the_app(self):
+        with tempfile.TemporaryDirectory() as directory:
+            project = Path(directory) / "existing"
+            (project / "Sources").mkdir(parents=True)
+            (project / "Sources" / "main.swift").write_text("print(1)\n")
+            (project / "README.md").write_text("# Existing app\n")
+            (project / "Makefile").write_text("build:\n\ttrue\n")
+            (project / "AGENTS.md").write_text("# Existing rules\nKeep this.\n")
+            result = invoke("adopt", "--config", EXAMPLE, "--project", project)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertEqual((project / "README.md").read_text(), "# Existing app\n")
+            self.assertEqual((project / "Sources" / "main.swift").read_text(), "print(1)\n")
+            agents = (project / "AGENTS.md").read_text()
+            self.assertTrue(agents.startswith("# Existing rules\nKeep this.\n"))
+            self.assertIn("## App Workshop operating layer", agents)
+            self.assertTrue((project / "docs" / "product" / "BRIEF.md").is_file())
+            self.assertFalse((project / "App.xcodeproj").exists())
+            manifest = json.loads((project / ".apple-scaffold.json").read_text())
+            self.assertEqual(manifest["unmanaged"], ["AGENTS.md", "Makefile", "README.md"])
+            self.assertNotIn("AGENTS.md", manifest["files"])
+            update = invoke("update", "--project", project)
+            self.assertIn("Would apply 0 change(s); 0 conflict(s)", update.stdout)
+            again = invoke("adopt", "--config", EXAMPLE, "--project", project)
+            self.assertNotEqual(again.returncode, 0)
+            self.assertIn("use update", again.stderr)
+
+    def test_adopt_writes_nothing_on_conflict(self):
+        with tempfile.TemporaryDirectory() as directory:
+            project = Path(directory) / "existing"
+            (project / "docs" / "product").mkdir(parents=True)
+            (project / "docs" / "product" / "BRIEF.md").write_text("mine\n")
+            result = invoke("adopt", "--config", EXAMPLE, "--project", project)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("docs/product/BRIEF.md", result.stderr)
+            self.assertEqual(sorted(path.relative_to(project).as_posix() for path in project.rglob("*") if path.is_file()),
+                             ["docs/product/BRIEF.md"])
 
 
 if __name__ == "__main__":
