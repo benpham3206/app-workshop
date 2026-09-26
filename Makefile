@@ -7,13 +7,16 @@ APPLY ?=
 ICON_BRIEF ?= dist/neutral-preview/design/icon-brief.json
 ICON_OUTPUT ?= dist/neutral-preview/docs/design/ICON-PLAN.md
 
-.PHONY: validate generate update troubleshoot icon-plan process-guide verify verify-xcode
+.PHONY: validate generate adopt update troubleshoot icon-plan process-guide verify verify-xcode
 
 validate:
 	$(PYTHON) tooling/scaffold.py validate --config "$(CONFIG)"
 
 generate:
 	$(PYTHON) tooling/scaffold.py generate --config "$(CONFIG)" --output "$(OUTPUT)" $(if $(STARTER),--starter "$(STARTER)")
+
+adopt:
+	$(PYTHON) tooling/scaffold.py adopt --config "$(CONFIG)" --project "$(PROJECT)"
 
 update:
 	$(PYTHON) tooling/scaffold.py update --project "$(PROJECT)" $(if $(APPLY),--apply)

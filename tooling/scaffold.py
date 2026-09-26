@@ -17,6 +17,9 @@ CATALOG = json.loads((ROOT / "config" / "catalog.json").read_text(encoding="utf-
 TEMPLATES = ROOT / "templates" / "generated-app"
 STARTERS = ROOT / "templates" / "starters"
 MANIFEST = ".apple-scaffold.json"
+# ADOPT keeps these when the project already has them; the project owns them afterwards.
+KEEP_IF_PRESENT = ("README.md", "Makefile", ".gitignore")
+MERGED = "AGENTS.md"
 SLUG = re.compile(r"^[a-z](?:[a-z0-9-]{0,62}[a-z0-9])?$")
 
 
@@ -263,13 +266,16 @@ def _build(config, starter, temporary):
                 _write_from_template(source, temporary / source.relative_to(STARTERS / starter), tokens)
 
 
-def _manifest(config, starter, files):
-    return {
+def _manifest(config, starter, files, unmanaged=()):
+    manifest = {
         "template_version": (ROOT / "TEMPLATE_VERSION").read_text(encoding="utf-8").strip(),
         "selection": config,
         "starter": starter,
         "files": files,
     }
+    if unmanaged:
+        manifest["unmanaged"] = sorted(unmanaged)
+    return manifest
 
 
 def _write_manifest(root, manifest):
@@ -310,6 +316,7 @@ def update(project, apply=False):
     starter = manifest.get("starter")
     _check_starter(config, starter)
     recorded = manifest.get("files") or {}
+    unmanaged = set(manifest.get("unmanaged") or ())
     plan = {"add": [], "update": [], "conflict": [], "retired": [], "diffs": []}
     with tempfile.TemporaryDirectory() as directory:
         fresh = Path(directory)
@@ -317,6 +324,8 @@ def update(project, apply=False):
         fresh_hashes = _hashes(fresh)
         files = dict(recorded)
         for relative, digest in fresh_hashes.items():
+            if relative in unmanaged:
+                continue
             current = project / relative
             if not current.exists():
                 plan["add"].append(relative)
@@ -339,8 +348,45 @@ def update(project, apply=False):
                 destination.parent.mkdir(parents=True, exist_ok=True)
                 shutil.copy2(fresh / relative, destination)
                 files[relative] = fresh_hashes[relative]
-            _write_manifest(project, _manifest(config, starter, dict(sorted(files.items()))))
+            _write_manifest(project, _manifest(config, starter, dict(sorted(files.items())), unmanaged))
     return plan
+
+
+def adopt(config, project):
+    """Add the planning and operating layer to an existing app without touching its code.
+
+    Existing README.md, Makefile, .gitignore, and .github/ files are kept. An existing AGENTS.md
+    gets the generated rules appended. Any other existing path is a conflict, and then nothing is written.
+    """
+    project = project.resolve()
+    if not project.is_dir():
+        raise ScaffoldError(f"Existing project directory not found: {project}")
+    if (project / MANIFEST).exists():
+        raise ScaffoldError(f"{MANIFEST} already exists; use update instead")
+    with tempfile.TemporaryDirectory() as directory:
+        fresh = Path(directory)
+        _build(config, None, fresh)
+        paths = sorted(path.relative_to(fresh).as_posix() for path in fresh.rglob("*") if path.is_file())
+        present = [relative for relative in paths
+                   if (project / relative).exists() or (project / relative).is_symlink()]
+        kept = [relative for relative in present
+                if relative in KEEP_IF_PRESENT or relative.startswith(".github/")]
+        merged = [relative for relative in present if relative == MERGED and (project / relative).is_file()]
+        conflicts = sorted(set(present) - set(kept) - set(merged))
+        if conflicts:
+            raise ScaffoldError("ADOPT conflict; nothing was written. Already present: " + ", ".join(conflicts))
+        written = [relative for relative in paths if relative not in present]
+        for relative in written:
+            destination = project / relative
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(fresh / relative, destination)
+        for relative in merged:
+            rules = (fresh / relative).read_text(encoding="utf-8").split("\n", 1)[1]
+            with (project / relative).open("a", encoding="utf-8") as handle:
+                handle.write("\n\n## App Workshop operating layer\n" + rules)
+        files = {relative: _digest(project / relative) for relative in written}
+        _write_manifest(project, _manifest(config, None, files, kept + merged))
+    return written, kept, merged
 
 
 def main(argv=None):
@@ -353,6 +399,9 @@ def main(argv=None):
             sub.add_argument("--output", required=True, type=Path)
             sub.add_argument("--starter", choices=sorted(path.name for path in STARTERS.iterdir() if path.is_dir()),
                              help="also generate a runnable app starter")
+    sub = subparsers.add_parser("adopt", help="add the planning layer to an existing app")
+    sub.add_argument("--config", required=True, type=Path)
+    sub.add_argument("--project", required=True, type=Path)
     sub = subparsers.add_parser("update", help="dry-run by default; --apply writes only unedited files")
     sub.add_argument("--project", required=True, type=Path)
     sub.add_argument("--apply", action="store_true")
@@ -370,6 +419,16 @@ def main(argv=None):
                   f"{len(plan['conflict'])} conflict(s) left for review; retired files are never deleted.")
             return 0
         config = load_config(args.config)
+        if args.command == "adopt":
+            written, kept, merged = adopt(config, args.project)
+            print(f"Adopted {args.project}: wrote {len(written)} file(s).")
+            for relative in kept:
+                print(f"kept      {relative}")
+            if "Makefile" in kept:
+                print("Your Makefile was kept. Add: check: ; python3 tools/readiness.py")
+            for relative in merged:
+                print(f"appended  {relative}")
+            return 0
         if args.command == "generate":
             generate(config, args.output, args.starter)
             print(f"Generated {args.output}")

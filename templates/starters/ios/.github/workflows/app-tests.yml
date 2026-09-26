@@ -1,0 +1,22 @@
+name: App tests
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: app-tests-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    # macOS runner minutes cost more than Linux minutes.
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build and run state tests in Simulator
+        run: make test
