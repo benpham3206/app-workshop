@@ -1,8 +1,17 @@
 # {{PROJECT_NAME}}
 
-This is a product-neutral Apple app planning scaffold. Its selected identity, platforms, and optional modules are recorded in `.apple-scaffold.json`. There is no application implementation yet.
+This is an Apple app scaffold. Its selected identity, platforms, optional modules, and starter are recorded in `.apple-scaffold.json`.
 
-## Start here
+## First hour
+
+1. Write `docs/product/BRIEF.md`: who, what job, and the first useful result. One paragraph is enough.
+2. Draw the first flow in `docs/ux/FLOWS.md`: launch to result, plus one failure path.
+3. Run it. With the iOS starter, `make run` builds and launches the app in Simulator and `make test` runs its state tests. Without a starter, create one app target in Xcode and launch it before planning further.
+4. Run `make check`. It checks structure and lists the gates in `docs/quality/gates.json`. Mark a gate `done` only with evidence files; keep it `open` when its check has not run.
+
+Everything below is reference. Open it when a gate asks for it, not before.
+
+## Reference
 
 1. Read `docs/BEGINNER-GUIDE.md` for the step-by-step path. Complete `docs/product/BRIEF.md` with the user's job and first useful result. Use `docs/START-TO-SHIP.md` and `docs/OPERATING-SYSTEM.md` as the delivery maps.
 2. Review `docs/design/IDENTITY.md` and the selected identity recipe.
@@ -16,6 +25,6 @@ This is a product-neutral Apple app planning scaffold. Its selected identity, pl
 9. Use `docs/design/NATIVE-REVIEW.md` to inspect the runnable experience and record evidence for each supported platform.
 10. Revisit `docs/compatibility/REVIEW.md` for each OS, SDK, or device change that could affect the app.
 
-Run `make check` in this project to verify its generated structure and list open planning decisions. Once the product promise and motifs are real, fill `design/icon-brief.json` and run `make icon-plan` here. These tools are included in the generated project. `make check` does not verify an app build or approve release.
+Run `make check` in this project to verify its generated structure and list its gates. Once the product promise and motifs are real, fill `design/icon-brief.json` and run `make icon-plan` here. These tools are included in the generated project. `make check` does not verify an app build or approve release.
 
 Read `AGENTS.md` and `docs/agents/NAVIGATION.md` before changing this project. Use `docs/agents/TASK-PACKET.md` to give any assigned agent a clear file scope and evidence target.

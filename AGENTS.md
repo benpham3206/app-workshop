@@ -54,4 +54,6 @@ The boilerplate must ask each future app to state why it should exist, what usef
 - Report what was actually checked. If Xcode or a device is unavailable, say so and do not claim a build or device test passed.
 - Update the smallest relevant specification or checklist when a documented decision changes. Keep generated projects free of boilerplate internals.
 - The beginner journey in `config/process.json` owns stable phase and action IDs. Copy edits may change action text, but never reuse or reorder IDs to represent a different task; checklist migration depends on them. Regenerate the dogfood and preview resources after process changes.
+- A starter under `templates/starters/` must build, test, and launch; run `make verify-xcode` after changing one and report it as skipped if Xcode is unavailable. Keep it to one task owner and its tests; product screens belong in the app, not the factory.
+- A generated file's content change reaches existing apps through `make update`. Do not rename or move a generated path without noting it in the change; the old path becomes a retired file.
 - When adding a platform or capability, update `config/troubleshooting.json` with likely failures and first checks only when supported by a current primary Apple source; keep the generated guide specific to selected choices.

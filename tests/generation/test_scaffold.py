@@ -1,4 +1,6 @@
+import hashlib
 import json
+import os
 import re
 import subprocess
 import sys
@@ -192,9 +194,22 @@ class ScaffoldContracts(unittest.TestCase):
             result = subprocess.run([sys.executable, str(checker)], cwd=output, capture_output=True, text=True)
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
             self.assertIn("Structure: PASS", result.stdout)
-            self.assertIn("Planning decisions still pending", result.stdout)
+            self.assertIn("Gates: 0 of 8 done", result.stdout)
+            self.assertIn("Next: product-brief", result.stdout)
             strict = subprocess.run([sys.executable, str(checker), "--strict"], cwd=output, capture_output=True, text=True)
             self.assertEqual(strict.returncode, 1)
+            gates_path = output / "docs" / "quality" / "gates.json"
+            gates = json.loads(gates_path.read_text())
+            gates["gates"][0]["status"] = "done"
+            gates_path.write_text(json.dumps(gates))
+            unproven = subprocess.run([sys.executable, str(checker)], cwd=output, capture_output=True, text=True)
+            self.assertEqual(unproven.returncode, 2)
+            self.assertIn("done needs at least one evidence path", unproven.stdout)
+            gates["gates"][0]["evidence"] = ["docs/product/BRIEF.md"]
+            gates_path.write_text(json.dumps(gates))
+            proven = subprocess.run([sys.executable, str(checker)], cwd=output, capture_output=True, text=True)
+            self.assertEqual(proven.returncode, 0, proven.stdout)
+            self.assertIn("Gates: 1 of 8 done", proven.stdout)
             (output / "docs" / "ux" / "FLOWS.md").unlink()
             broken = subprocess.run([sys.executable, str(checker)], cwd=output, capture_output=True, text=True)
             self.assertEqual(broken.returncode, 2)
@@ -239,6 +254,82 @@ class ScaffoldContracts(unittest.TestCase):
             def files(root):
                 return {str(path.relative_to(root)): path.read_bytes() for path in root.rglob("*") if path.is_file()}
             self.assertEqual(files(first), files(second))
+
+
+    def test_ios_starter_renders_a_runnable_project(self):
+        config = json.loads(EXAMPLE.read_text())
+        config["project"]["name"] = 'Say "Hi"'
+        with tempfile.TemporaryDirectory() as directory:
+            selection = Path(directory) / "selection.json"
+            selection.write_text(json.dumps(config))
+            output = Path(directory) / "generated"
+            result = invoke("generate", "--config", selection, "--output", output, "--starter", "ios")
+            self.assertEqual(result.returncode, 0, result.stderr)
+            project = (output / "App.xcodeproj" / "project.pbxproj").read_text()
+            self.assertIn("name = NeutralPreview;", project)
+            self.assertIn("SWIFT_VERSION = 6.0;", project)
+            self.assertIn('TARGETED_DEVICE_FAMILY = "1,2";', project)
+            self.assertIn('INFOPLIST_KEY_CFBundleDisplayName = "Say \\"Hi\\"";', project)
+            self.assertIn('.navigationTitle("Say \\"Hi\\"")', (output / "App" / "ContentView.swift").read_text())
+            self.assertIn("@testable import NeutralPreview", (output / "AppTests" / "FirstTaskTests.swift").read_text())
+            self.assertTrue(os.access(output / "scripts" / "simulator.sh", os.X_OK))
+            for path in output.rglob("*"):
+                if path.is_file() and path.suffix in {".swift", ".pbxproj", ".sh", ".mk"}:
+                    self.assertNotIn("{{", path.read_text(), path)
+            self.assertEqual(json.loads((output / ".apple-scaffold.json").read_text())["starter"], "ios")
+            checker = subprocess.run([sys.executable, str(output / "tools" / "readiness.py")], cwd=output, capture_output=True, text=True)
+            self.assertEqual(checker.returncode, 0, checker.stdout)
+
+    def test_ios_starter_needs_an_ios_platform(self):
+        config = json.loads(EXAMPLE.read_text())
+        config["platforms"] = ["macos"]
+        config["modules"] = []
+        with tempfile.TemporaryDirectory() as directory:
+            selection = Path(directory) / "selection.json"
+            selection.write_text(json.dumps(config))
+            result = invoke("generate", "--config", selection, "--output", Path(directory) / "out", "--starter", "ios")
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("needs iOS or iPadOS", result.stderr)
+
+    @unittest.skipUnless(os.environ.get("APP_WORKSHOP_XCODE") == "1", "set APP_WORKSHOP_XCODE=1 to build and test in Simulator")
+    def test_ios_starter_passes_its_tests_in_simulator(self):
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "generated"
+            self.assertEqual(invoke("generate", "--config", EXAMPLE, "--output", output, "--starter", "ios").returncode, 0)
+            result = subprocess.run(["make", "test"], cwd=output, capture_output=True, text=True)
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_update_replaces_only_unedited_files(self):
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "generated"
+            self.assertEqual(invoke("generate", "--config", EXAMPLE, "--output", output).returncode, 0)
+            manifest_path = output / ".apple-scaffold.json"
+            manifest = json.loads(manifest_path.read_text())
+            # An older factory wrote this file and the builder never touched it.
+            stale = output / "docs" / "OPERATING-SYSTEM.md"
+            stale.write_text("old factory text\n")
+            manifest["files"]["docs/OPERATING-SYSTEM.md"] = hashlib.sha256(stale.read_bytes()).hexdigest()
+            manifest["files"]["docs/RETIRED.md"] = "0" * 64
+            manifest_path.write_text(json.dumps(manifest))
+            edited = output / "docs" / "product" / "BRIEF.md"
+            edited.write_text("The builder's real brief\n")
+            (output / "docs" / "ux" / "STATES.md").unlink()
+
+            dry = invoke("update", "--project", output)
+            self.assertEqual(dry.returncode, 0, dry.stderr)
+            self.assertIn("update    docs/OPERATING-SYSTEM.md", dry.stdout)
+            self.assertIn("conflict  docs/product/BRIEF.md", dry.stdout)
+            self.assertIn("add       docs/ux/STATES.md", dry.stdout)
+            self.assertIn("retired   docs/RETIRED.md", dry.stdout)
+            self.assertEqual(stale.read_text(), "old factory text\n")
+
+            applied = invoke("update", "--project", output, "--apply")
+            self.assertEqual(applied.returncode, 0, applied.stderr)
+            self.assertNotEqual(stale.read_text(), "old factory text\n")
+            self.assertTrue((output / "docs" / "ux" / "STATES.md").is_file())
+            self.assertEqual(edited.read_text(), "The builder's real brief\n")
+            again = invoke("update", "--project", output)
+            self.assertIn("Would apply 0 change(s); 1 conflict(s)", again.stdout)
 
 
 if __name__ == "__main__":

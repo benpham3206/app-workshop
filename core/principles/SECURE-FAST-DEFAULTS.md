@@ -12,6 +12,14 @@ This is the implementation contract when a product becomes code. The scaffold ca
 - Inject storage and external services at the boundary so a test can run a task without a real account, network, purchase, or sensor. Test the state transition and recovery, not the SwiftUI layout implementation.
 - Keep shared business meaning separate from platform presentation. A new device may rearrange controls without creating a second copy of the task logic.
 
+## Build, diagnose, and evolve
+
+1. Build in the Swift 6 language mode. A warning you turn off in the first week becomes a migration later. The `--starter ios` project sets this up.
+2. Log with `Logger` (subsystem and category). Dynamic strings are redacted by default; mark a value `.public` only when it is not user data. Do not ship `print`. Put an `OSSignposter` interval around slow work before you tune it.
+3. Keep test hooks such as launch-environment switches inside `#if DEBUG`. A release build must not read them.
+4. Version persisted data from the first release (for SwiftData, a `VersionedSchema`). During a phased release, the old and new versions read the same store, and you cannot roll back a binary.
+5. When a defect is in Apple's code, reduce it to a sample project, file it in Feedback Assistant, and record the FB number beside the workaround.
+
 ## Privacy and security gates
 
 1. Start with no extra entitlement, background mode, SDK, account, analytics, or network dependency. Add one only for a selected user job, record its data flow, and test denial or absence.

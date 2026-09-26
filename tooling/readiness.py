@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check a generated app's structure and show which planning decisions remain open."""
+"""Check a generated app's structure and links, and report its explicit gates."""
 
 import argparse
 import json
@@ -9,6 +9,8 @@ from pathlib import Path
 from urllib.parse import unquote
 
 
+GATES = "docs/quality/gates.json"
+STATUSES = ("open", "done")
 REQUIRED = (
     "AGENTS.md", "PRINCIPLES.md", "README.md", "Makefile",
     "docs/BEGINNER-GUIDE.md", "docs/product/BRIEF.md", "docs/ux/FLOWS.md",
@@ -20,11 +22,7 @@ REQUIRED = (
     "docs/engineering/SECURE-FAST-DEFAULTS.md",
     "design/identity/RECIPE.md", "design/icon-brief.json",
     "tools/icon_plan.py", "tools/readiness.py", "resources/process.json",
-)
-DECISIONS = (
-    "docs/product/BRIEF.md", "docs/design/IDENTITY.md",
-    "docs/design/NATIVE-REVIEW.md", "docs/engineering/PROJECT-SETUP.md",
-    "docs/quality/TEST-MATRIX.md",
+    GATES,
 )
 LINK = re.compile(r"(?<!!)\[[^\]]+\]\(([^)]+)\)")
 TOKEN = re.compile(r"\{\{[A-Z_]+\}\}")
@@ -32,7 +30,6 @@ TOKEN = re.compile(r"\{\{[A-Z_]+\}\}")
 
 def inspect(root):
     errors = []
-    pending = []
     manifest_path = root / ".apple-scaffold.json"
     try:
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
@@ -54,6 +51,8 @@ def inspect(root):
             errors.append("selection has no platforms")
         if "ios" in selection["platforms"]:
             paths.append("docs/compatibility/IPHONE-DUO.md")
+        if manifest.get("starter") == "ios":
+            paths.extend(("App.xcodeproj/project.pbxproj", "scripts/simulator.sh", "starter.mk"))
         for item in selection["platforms"]:
             if isinstance(item, str) and re.fullmatch(r"[a-z0-9-]+", item):
                 paths.append(f"platforms/{item}/PROFILE.md")
@@ -93,34 +92,62 @@ def inspect(root):
             destination = unquote(target.split("#", 1)[0])
             if destination and not (path.parent / destination).resolve().exists():
                 errors.append(f"Broken link in {relative}: {target}")
-    for relative in DECISIONS:
-        path = root / relative
-        if path.is_file() and re.search(r"\bPending\b", path.read_text(encoding="utf-8"), re.IGNORECASE):
-            pending.append(relative)
-    return errors, pending
+    gates = read_gates(root, errors)
+    return errors, gates
+
+
+def read_gates(root, errors):
+    """Return [(id, question, status)]. A done gate without existing evidence is a structure error."""
+    try:
+        data = json.loads((root / GATES).read_text(encoding="utf-8"))
+        items = data["gates"]
+        if not isinstance(items, list):
+            raise TypeError("gates is not an array")
+    except (OSError, ValueError, KeyError, TypeError) as exc:
+        errors.append(f"{GATES}: {exc}")
+        return []
+    gates = []
+    for index, gate in enumerate(items):
+        where = f"{GATES} gate {index + 1}"
+        if not isinstance(gate, dict) or not all(isinstance(gate.get(key), str) for key in ("id", "question", "status")):
+            errors.append(f"{where}: needs string id, question, and status")
+            continue
+        evidence = gate.get("evidence", [])
+        if gate["status"] not in STATUSES:
+            errors.append(f"{where} ({gate['id']}): status must be one of {', '.join(STATUSES)}")
+        elif not isinstance(evidence, list) or not all(isinstance(item, str) for item in evidence):
+            errors.append(f"{where} ({gate['id']}): evidence must be an array of paths")
+        elif gate["status"] == "done":
+            if not evidence:
+                errors.append(f"{where} ({gate['id']}): done needs at least one evidence path")
+            for item in evidence:
+                if not (root / item).exists():
+                    errors.append(f"{where} ({gate['id']}): evidence not found: {item}")
+        gates.append((gate["id"], gate["question"], gate["status"]))
+    return gates
 
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--project", type=Path, default=Path(__file__).resolve().parents[1])
-    parser.add_argument("--strict", action="store_true", help="also fail when tracked planning decisions remain pending")
+    parser.add_argument("--strict", action="store_true", help="also fail while any gate in docs/quality/gates.json is open")
     args = parser.parse_args(argv)
     root = args.project.resolve()
-    errors, pending = inspect(root)
+    errors, gates = inspect(root)
     if errors:
         print("Structure: FAIL")
         for issue in errors:
             print(f"  - {issue}")
     else:
         print("Structure: PASS")
-    if pending:
-        print("Planning decisions still pending:")
-        for path in pending:
-            print(f"  - {path}")
-    else:
-        print("Tracked planning decisions: no Pending markers")
-    print("This check does not verify a build, native design quality, or release readiness.")
-    return 2 if errors else (1 if args.strict and pending else 0)
+    open_gates = [gate for gate in gates if gate[2] != "done"]
+    print(f"Gates: {len(gates) - len(open_gates)} of {len(gates)} done ({GATES})")
+    for gate_id, _, status in gates:
+        print(f"  [{'x' if status == 'done' else ' '}] {gate_id}")
+    if open_gates:
+        print(f"Next: {open_gates[0][0]} - {open_gates[0][1]}")
+    print("A done gate is only as true as its evidence files. This check does not run a build or approve a release.")
+    return 2 if errors else (1 if args.strict and open_gates else 0)
 
 
 if __name__ == "__main__":

@@ -1,6 +1,6 @@
 # Apple ecosystem boilerplate
 
-A product-neutral planning scaffold for apps across Apple platforms. It includes selectable identity recipes, platform profiles, optional capability contracts, an interaction library, an icon concept planner, and a generator for likely troubleshooting checks. It does not choose a product or create an Xcode app yet.
+A product-neutral planning scaffold for apps across Apple platforms. It includes selectable identity recipes, platform profiles, optional capability contracts, an interaction library, an icon concept planner, and a generator for likely troubleshooting checks. It does not choose a product. With `--starter ios` it also generates a minimal iOS app that builds, tests, and launches in Simulator.
 
 `PRINCIPLES.md` defines the quality standard for builders and agents: great and outstanding are the baseline; timeless is the long-term goal.
 `core/principles/GLASS-AND-PERFORMANCE.md` makes native Liquid Glass and responsive performance across selected devices explicit design and release gates.
@@ -31,7 +31,26 @@ make generate CONFIG=path/to/project.json OUTPUT=dist/my-preview
 make troubleshoot CONFIG=path/to/project.json
 ```
 
-Each generated project includes `make check` and `make icon-plan`. Run `make check` inside the generated project to inspect its structure and open planning decisions. Once a real app has a purpose and icon motifs, fill its `design/icon-brief.json` and run `make icon-plan` there. The planner creates concept prompts and a production checklist; artwork and Xcode previews remain separate steps.
+To get a runnable iOS app on day one, add the starter. It needs Xcode; set `DEVELOPER_DIR` if Xcode is not the active developer directory.
+
+```sh
+make generate CONFIG=path/to/project.json OUTPUT=dist/my-app STARTER=ios
+cd dist/my-app && make run    # build and launch in Simulator
+make test                     # Swift Testing state tests
+```
+
+The starter is an Xcode project with synchronized folders, so new Swift files in `App/` or `AppTests/` build without project-file edits. It uses Swift 6 language mode, a `Logger`, and one task owner with tests for duplicate taps and failure recovery. `make verify-xcode` runs the same generate-and-test check from this factory.
+
+To adopt later factory fixes in an existing app, run a dry run first:
+
+```sh
+make update PROJECT=path/to/app          # report only
+make update PROJECT=path/to/app APPLY=1  # write files the builder never edited
+```
+
+The manifest records a hash of each generated file. A file the builder edited is reported as a conflict with a diff and is never overwritten. Projects generated before 0.5.0 have no hashes, so every changed file is a conflict.
+
+Each generated project includes `make check` and `make icon-plan`. Run `make check` inside the generated project to inspect its structure and its gates in `docs/quality/gates.json`. A gate is `open` or `done`; `done` must cite evidence files that exist. Once a real app has a purpose and icon motifs, fill its `design/icon-brief.json` and run `make icon-plan` there. The planner creates concept prompts and a production checklist; artwork and Xcode previews remain separate steps.
 
 The configuration contract is in `config/schema/project.schema.json`. The CLI performs its own selection checks; the JSON Schema is provided for editors and external tooling.
 
