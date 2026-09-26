@@ -1,0 +1,265 @@
+#!/usr/bin/env python3
+"""Validate a project selection and generate a product-neutral planning scaffold."""
+
+import argparse
+import json
+import re
+import shutil
+import sys
+import tempfile
+from pathlib import Path
+
+
+ROOT = Path(__file__).resolve().parents[1]
+CATALOG = json.loads((ROOT / "config" / "catalog.json").read_text(encoding="utf-8"))
+TEMPLATES = ROOT / "templates" / "generated-app"
+SLUG = re.compile(r"^[a-z](?:[a-z0-9-]{0,62}[a-z0-9])?$")
+
+
+class ScaffoldError(Exception):
+    pass
+
+
+def _exact_keys(value, required, where):
+    if not isinstance(value, dict) or set(value) != set(required):
+        raise ScaffoldError(f"{where} must contain exactly: {', '.join(required)}")
+
+
+def _selection(value, allowed, where, require_one=False):
+    if not isinstance(value, list) or (require_one and not value):
+        raise ScaffoldError(f"{where} must be {'a nonempty' if require_one else 'an'} array")
+    if any(not isinstance(item, str) or item not in allowed for item in value):
+        raise ScaffoldError(f"{where} contains an unknown choice")
+    if len(value) != len(set(value)):
+        raise ScaffoldError(f"{where} contains a duplicate choice")
+
+
+def load_config(path):
+    try:
+        config = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError) as exc:
+        raise ScaffoldError(f"Cannot read configuration: {exc}") from exc
+
+    _exact_keys(config, ("schema_version", "project", "identity", "platforms", "modules"), "Configuration")
+    if type(config["schema_version"]) is not int or config["schema_version"] != CATALOG["schema_version"]:
+        raise ScaffoldError("Unsupported schema_version")
+    _exact_keys(config["project"], ("name", "slug"), "project")
+    name = config["project"]["name"]
+    slug = config["project"]["slug"]
+    if not isinstance(name, str) or not name.strip() or len(name) > 80 or any(ord(char) < 32 for char in name):
+        raise ScaffoldError("project.name must be 1-80 printable characters")
+    if not isinstance(slug, str) or not SLUG.fullmatch(slug):
+        raise ScaffoldError("project.slug must be lowercase letters, digits, and internal hyphens")
+    if not isinstance(config["identity"], str) or config["identity"] not in CATALOG["identities"]:
+        raise ScaffoldError("identity is not in the catalog")
+    _selection(config["platforms"], CATALOG["platforms"], "platforms", require_one=True)
+    _selection(config["modules"], CATALOG["modules"], "modules")
+    if "active-activity" in config["modules"] and not {"ios", "ipados"}.intersection(config["platforms"]):
+        raise ScaffoldError("active-activity needs iOS or iPadOS; a paired Watch displays it")
+    if "widgets" in config["modules"] and not {"ios", "ipados", "macos", "watchos", "visionos"}.intersection(config["platforms"]):
+        raise ScaffoldError("widgets needs a WidgetKit platform; tvOS has no WidgetKit widgets")
+    return config
+
+
+def _render(text, tokens):
+    for key, value in tokens.items():
+        text = text.replace("{{" + key + "}}", value)
+    if re.search(r"\{\{[A-Z_]+\}\}", text):
+        raise ScaffoldError("An unresolved template token remains")
+    return text
+
+
+def _write_from_template(source, destination, tokens):
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    destination.write_text(_render(source.read_text(encoding="utf-8"), tokens), encoding="utf-8")
+
+
+def _module_text(module):
+    source = ROOT / "modules" / module / "README.md"
+    if not source.is_file():
+        raise ScaffoldError(f"Missing module contract: {source.relative_to(ROOT)}")
+    return source.read_text(encoding="utf-8")
+
+
+def generate(config, output):
+    output = output.resolve()
+    if output.exists() and (not output.is_dir() or any(output.iterdir())):
+        raise ScaffoldError(f"Refusing to overwrite nonempty target: {output}")
+    output.parent.mkdir(parents=True, exist_ok=True)
+    temporary = Path(tempfile.mkdtemp(prefix=".apple-scaffold-", dir=output.parent))
+    tokens = {
+        "PROJECT_NAME": config["project"]["name"].strip(),
+        "IDENTITY": config["identity"],
+        "PLATFORMS": "\n".join(f"- {item}" for item in config["platforms"]),
+        "MODULES": "\n".join(f"- {item}" for item in config["modules"]) or "- None selected",
+        "SELECTED_PLATFORM_FILES": "\n".join(
+            f"- [{item}](../../platforms/{item}/PROFILE.md): `platforms/{item}/PROFILE.md`"
+            for item in config["platforms"]
+        ),
+        "SELECTED_MODULE_FILES": "\n".join(
+            f"- [{item}](../../modules/{item}/CONTRACT.md): `modules/{item}/CONTRACT.md`"
+            for item in config["modules"]
+        ) or "- None selected; add a capability only after its user job is clear.",
+        "SELECTED_COMPATIBILITY_FILES": (
+            "- [Adaptive iPhone layout](../compatibility/IPHONE-DUO.md): `docs/compatibility/IPHONE-DUO.md`"
+            if "ios" in config["platforms"] else
+            "- [Compatibility review](../compatibility/REVIEW.md): `docs/compatibility/REVIEW.md`"
+        ),
+        "IPHONE_TEST_MATRIX_ROW": (
+            "| Adaptive iPhone | Compact to regular, open/close, rotate, resize, split view, and scene restoration; see `../compatibility/IPHONE-DUO.md` | iPhone Duo simulator and physical hardware | | Pending |"
+            if "ios" in config["platforms"] else ""
+        ),
+        "IPHONE_AGENT_RULE": (
+            "For an iPhone target, read `docs/compatibility/IPHONE-DUO.md` before designing navigation or promising new-device support. Preserve task state across compact, regular, rotation, posture, and scene transitions; record device evidence rather than inferring compatibility from an iPhone preview."
+            if "ios" in config["platforms"] else ""
+        ),
+    }
+    try:
+        for source in TEMPLATES.rglob("*"):
+            if source.is_file() and source.name != ".gitkeep":
+                _write_from_template(source, temporary / source.relative_to(TEMPLATES), tokens)
+        _write_from_template(ROOT / "PRINCIPLES.md", temporary / "PRINCIPLES.md", tokens)
+        _write_from_template(
+            ROOT / "core" / "principles" / "GLASS-AND-PERFORMANCE.md",
+            temporary / "docs" / "quality" / "GLASS-AND-PERFORMANCE.md",
+            tokens,
+        )
+        _write_from_template(
+            ROOT / "core" / "principles" / "SECURE-FAST-DEFAULTS.md",
+            temporary / "docs" / "engineering" / "SECURE-FAST-DEFAULTS.md",
+            tokens,
+        )
+        _write_from_template(
+            ROOT / "docs" / "agents" / "TASK-PACKET.md",
+            temporary / "docs" / "agents" / "TASK-PACKET.md",
+            tokens,
+        )
+        _write_from_template(
+            ROOT / "docs" / "compatibility" / "REVIEW.md",
+            temporary / "docs" / "compatibility" / "REVIEW.md",
+            tokens,
+        )
+        if "ios" in config["platforms"]:
+            _write_from_template(
+                ROOT / "platforms" / "ios" / "ADAPTIVE-LAYOUT.md",
+                temporary / "docs" / "compatibility" / "IPHONE-DUO.md",
+                tokens,
+            )
+
+        _write_from_template(
+            ROOT / "design" / "identity" / config["identity"] / "README.md",
+            temporary / "design" / "identity" / "RECIPE.md",
+            tokens,
+        )
+        _write_from_template(
+            ROOT / "design" / "app-icon" / "README.md",
+            temporary / "docs" / "design" / "APP-ICON.md",
+            tokens,
+        )
+        _write_from_template(
+            ROOT / "design" / "NATIVE-REVIEW.md",
+            temporary / "docs" / "design" / "NATIVE-REVIEW.md",
+            tokens,
+        )
+        (temporary / "tools").mkdir(parents=True, exist_ok=True)
+        for tool in ("icon_plan.py", "readiness.py"):
+            shutil.copyfile(ROOT / "tooling" / tool, temporary / "tools" / tool)
+        (temporary / "docs" / "quality" / "evidence").mkdir(parents=True, exist_ok=True)
+        (temporary / "docs" / "quality" / "evidence" / ".gitkeep").touch()
+        icon_brief = {
+            "schema_version": 1,
+            "app_name": config["project"]["name"].strip(),
+            "identity": config["identity"],
+            "platforms": config["platforms"],
+            "product_promise": "",
+            "visual_motifs": [],
+            "avoid": [],
+        }
+        (temporary / "design" / "icon-brief.json").write_text(
+            json.dumps(icon_brief, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
+        )
+        for source in (ROOT / "ux" / "interactions").glob("*.md"):
+            _write_from_template(
+                source, temporary / "docs" / "ux" / "interactions" / source.name, tokens
+            )
+        for source in (ROOT / "ux" / "patterns").glob("*.md"):
+            _write_from_template(
+                source, temporary / "docs" / "ux" / "patterns" / source.name, tokens
+            )
+        _write_from_template(
+            ROOT / "docs" / "process" / "START-TO-SHIP.md",
+            temporary / "docs" / "START-TO-SHIP.md",
+            tokens,
+        )
+        _write_from_template(
+            ROOT / "docs" / "process" / "SOLO-AI-OPERATING-SYSTEM.md",
+            temporary / "docs" / "OPERATING-SYSTEM.md",
+            tokens,
+        )
+        from process_guide import load_process, render_guide
+        process = load_process()
+        (temporary / "docs" / "BEGINNER-GUIDE.md").write_text(
+            render_guide(process), encoding="utf-8"
+        )
+        (temporary / "resources").mkdir(parents=True, exist_ok=True)
+        (temporary / "resources" / "process.json").write_text(
+            json.dumps(process, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
+        )
+        (temporary / "design" / "assets").mkdir(parents=True, exist_ok=True)
+        (temporary / "design" / "assets" / ".gitkeep").touch()
+
+        for platform in config["platforms"]:
+            _write_from_template(
+                ROOT / "platforms" / platform / "README.md",
+                temporary / "platforms" / platform / "PROFILE.md",
+                tokens,
+            )
+        for module in config["modules"]:
+            destination = temporary / "modules" / module / "CONTRACT.md"
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            destination.write_text(_module_text(module), encoding="utf-8")
+
+        from troubleshoot import build_guide
+        (temporary / "docs" / "TROUBLESHOOTING.md").write_text(
+            build_guide(config), encoding="utf-8"
+        )
+
+        manifest = {
+            "template_version": (ROOT / "TEMPLATE_VERSION").read_text(encoding="utf-8").strip(),
+            "selection": config,
+        }
+        (temporary / ".apple-scaffold.json").write_text(
+            json.dumps(manifest, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
+        )
+        if output.exists():
+            output.rmdir()
+        temporary.replace(output)
+    except Exception:
+        shutil.rmtree(temporary)
+        raise
+
+
+def main(argv=None):
+    parser = argparse.ArgumentParser(description=__doc__)
+    subparsers = parser.add_subparsers(dest="command", required=True)
+    for command in ("validate", "generate"):
+        sub = subparsers.add_parser(command)
+        sub.add_argument("--config", required=True, type=Path)
+        if command == "generate":
+            sub.add_argument("--output", required=True, type=Path)
+    args = parser.parse_args(argv)
+    try:
+        config = load_config(args.config)
+        if args.command == "generate":
+            generate(config, args.output)
+            print(f"Generated {args.output}")
+        else:
+            print(f"Valid selection: {config['project']['slug']}")
+    except (ScaffoldError, OSError) as exc:
+        print(f"Error: {exc}", file=sys.stderr)
+        return 1
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-label="App Workshop icon">
+  <rect width="1024" height="1024" fill="#1737AF"/>
+  <defs>
+    <path id="tile" d="M 68 0 H 248 A 52 52 0 0 1 300 52 V 108 A 52 52 0 0 1 248 160 H 214 A 54 54 0 0 0 160 214 V 248 A 52 52 0 0 1 108 300 H 52 A 52 52 0 0 1 0 248 V 68 A 68 68 0 0 1 68 0 Z"/>
+  </defs>
+  <use href="#tile" x="164" y="552" fill="#FFF5DE"/>
+  <use href="#tile" x="362" y="360" fill="#FF806F"/>
+  <use href="#tile" x="560" y="168" fill="#75EBAF"/>
+</svg>

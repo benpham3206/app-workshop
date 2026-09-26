@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "identities": ["playful-kinetic", "calm-precise", "dark-technical"],
+  "platforms": ["ios", "ipados", "macos", "watchos", "tvos", "visionos"],
+  "modules": [
+    "accounts",
+    "active-activity",
+    "app-intents",
+    "background-work",
+    "commerce",
+    "notifications",
+    "share",
+    "sync",
+    "widgets"
+  ]
+}

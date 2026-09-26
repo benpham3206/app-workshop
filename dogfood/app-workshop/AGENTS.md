@@ -1,0 +1,12 @@
+# Agent instructions for App Workshop
+
+This repository was generated as a planning scaffold. Follow the user's current request and keep product assumptions explicit.
+
+Read `PRINCIPLES.md`, `docs/quality/GLASS-AND-PERFORMANCE.md`, `docs/design/NATIVE-REVIEW.md`, `docs/agents/NAVIGATION.md`, `docs/product/BRIEF.md`, `docs/design/IDENTITY.md`, `docs/ux/FLOWS.md`, `docs/ux/interactions/README.md`, applicable `docs/ux/patterns/`, and the selected platform and module profiles before implementation. Confirm current Apple API availability, Human Interface Guidelines, privacy requirements, and App Review rules for each feature. Use `docs/TROUBLESHOOTING.md` to plan likely failure checks and update it with confirmed product issues.
+
+Use native behavior for each supported platform. On supported OS versions, rely on system Liquid Glass for navigation and controls; keep content legible and add custom glass only when it helps a real control. Set an OS fallback. Treat responsive interaction, memory, and energy on representative hardware for each selected device class as release priorities. Preserve accessibility, localization, privacy, and recovery behavior as the product takes shape. Add dependencies, entitlements, targets, and backend services only for selected capabilities. Record evidence from actual builds and device tests; do not claim checks that were not run.
+When code begins, use `docs/engineering/SECURE-FAST-DEFAULTS.md` for state ownership, service boundaries, cancellation, permissions, logging, and performance gates. A template does not prove the app secure or fast; the implemented journey and device evidence do.
+Review `docs/compatibility/REVIEW.md` when the SDK, OS, hardware, or supported platform set changes.
+
+Use `docs/OPERATING-SYSTEM.md` and `docs/operations/WORKBOARD.md` for phase gates and bounded agent tasks. Before assigned work, read `docs/agents/TASK-PACKET.md` and the file routes in `docs/agents/NAVIGATION.md`. A task needs a goal, exact `May edit` paths, shared files that require coordination, constraints, downstream consumers, acceptance evidence, expected output, and stop condition. One agent owns each shared source during parallel work. Review behavior and test output before accepting it. Keep product judgment, account actions, pricing, and release decisions with the builder.
+Any subagent should read `PRINCIPLES.md` and report which claims were verified and which remain open. Great and outstanding are the baseline; timeless is a long-term goal, not a self-awarded label.

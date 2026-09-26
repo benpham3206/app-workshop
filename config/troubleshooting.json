@@ -1,0 +1,226 @@
+{
+  "version": 1,
+  "rules": [
+    {
+      "id": "build-availability",
+      "title": "Build fails or an API is unavailable",
+      "platforms_any": [],
+      "modules_any": [],
+      "symptom": "A selected target does not compile, launch, or offer the expected API.",
+      "checks": [
+        "Confirm Xcode, SDK, deployment target, and device OS versions for each selected platform.",
+        "Check API availability and conditional code at the call site; do not infer support from another Apple platform.",
+        "Reproduce on a supported Simulator and, for hardware-specific behavior, a physical device."
+      ],
+      "source": "https://developer.apple.com/documentation/xcode/running-your-app-on-simulated-or-physical-devices"
+    },
+    {
+      "id": "signing-entitlements",
+      "title": "A capability works in one build but fails after signing",
+      "platforms_any": [],
+      "modules_any": [],
+      "symptom": "A device, TestFlight, or release build cannot use an expected capability.",
+      "checks": [
+        "Compare the capability in the target, App ID, provisioning profile, and signed entitlements.",
+        "Check the failing build configuration and distribution environment rather than assuming debug settings carry over.",
+        "Save the exact entitlement error and the affected target before changing signing settings."
+      ],
+      "source": "https://developer.apple.com/documentation/bundleresources/diagnosing-issues-with-entitlements"
+    },
+    {
+      "id": "privacy-review",
+      "title": "Privacy declaration or App Review blocks release",
+      "platforms_any": [],
+      "modules_any": [],
+      "symptom": "Archive validation or App Review reports missing disclosure, permission context, or required metadata.",
+      "checks": [
+        "Inventory collected data, third-party SDKs, required-reason APIs, permission prompts, and in-app disclosures.",
+        "Check the built app and included SDK privacy manifests against the actual behavior.",
+        "Reproduce the reviewer path and include working credentials or demo access when review requires an account."
+      ],
+      "source": "https://developer.apple.com/documentation/bundleresources/privacy-manifest-files"
+    },
+    {
+      "id": "accessibility-localization",
+      "title": "A screen breaks with larger text or another language",
+      "platforms_any": [],
+      "modules_any": [],
+      "symptom": "Content clips, controls lose labels, or a flow becomes difficult to complete.",
+      "checks": [
+        "Preview representative content at large text sizes, increased contrast, and Reduce Motion settings.",
+        "Test longer translated strings and right-to-left layout where applicable.",
+        "Verify every critical action with the platform's accessibility input and focus model."
+      ],
+      "source": "https://developer.apple.com/documentation/xcode/localizing-and-varying-text-with-a-string-catalog"
+    },
+    {
+      "id": "glass-legibility",
+      "title": "Liquid Glass is hard to read or feels overused",
+      "platforms_any": [],
+      "modules_any": [],
+      "symptom": "Navigation or controls lose contrast, overlap content, or look inconsistent across OS versions and appearances.",
+      "checks": [
+        "Check whether standard navigation and controls already provide the correct system glass before adding a custom effect.",
+        "Keep glass in the functional layer; remove decorative glass from content cards and reduce stacked blur or tint.",
+        "Compare light and dark, increased contrast, reduced transparency, Reduce Motion, changing content, and earlier-OS fallback on selected devices."
+      ],
+      "source": "https://developer.apple.com/design/human-interface-guidelines/materials"
+    },
+    {
+      "id": "device-performance",
+      "title": "The app is smooth on one device but slow or hot on another",
+      "platforms_any": [],
+      "modules_any": [],
+      "symptom": "Launch, scrolling, a main action, memory, or energy use regresses on a supported device class.",
+      "checks": [
+        "Record the device, OS, release build, dataset, and exact journey; reproduce on representative physical hardware rather than relying on Simulator.",
+        "Compare cold and warm launch, response, hitches, memory, and energy with a baseline for the same scenario.",
+        "Profile the failing path with Xcode and Instruments; inspect broad view updates, main-thread work, images, and custom effects before changing the device support promise."
+      ],
+      "source": "https://developer.apple.com/documentation/xcode/performance-and-metrics"
+    },
+    {
+      "id": "iphone-duo-transition",
+      "title": "iPhone layout clips or loses work when Duo opens or closes",
+      "platforms_any": ["ios"],
+      "modules_any": [],
+      "symptom": "A compact screen becomes a larger scene or returns to compact space, and controls clip, navigation resets, or a draft disappears.",
+      "checks": [
+        "Reproduce the same task on the outer and inner displays while recording scene size, size classes, and the transition; do not branch on a device model or global screen width.",
+        "Check that navigation and draft state live outside the layout switch and restore by stable item IDs for each scene.",
+        "Check safe areas, partial-fold posture, split view, larger text, and repeated transitions in the matching Duo Simulator; verify touch and performance on hardware before claiming support."
+      ],
+      "source": "https://developer.apple.com/videos/play/tech-talks/111461/"
+    },
+    {
+      "id": "live-activity-absent",
+      "title": "Live Activity does not appear",
+      "platforms_any": [],
+      "modules_any": ["active-activity"],
+      "symptom": "The app starts an activity, but the expected system presentation is absent.",
+      "checks": [
+        "Check Activity authorization and the request error; confirm the activity is associated with an active event.",
+        "Verify the app and widget extension configuration, supported OS, and tested presentation surface.",
+        "Do not assume the Dynamic Island exists on every device or that the system displays an activity continuously."
+      ],
+      "source": "https://developer.apple.com/documentation/activitykit/displaying-live-data-with-live-activities"
+    },
+    {
+      "id": "live-activity-stale",
+      "title": "Live Activity shows old information",
+      "platforms_any": [],
+      "modules_any": ["active-activity"],
+      "symptom": "The activity remains visible while its content stops reflecting the event.",
+      "checks": [
+        "Check the activity state, stale date, update path, and last successful content update.",
+        "Test loss of network, app suspension, push delivery if used, and the end-of-event path.",
+        "Design a truthful stale and ended state instead of promising continuous refresh."
+      ],
+      "source": "https://developer.apple.com/documentation/activitykit/activitystate/stale"
+    },
+    {
+      "id": "watch-live-activity",
+      "title": "iPhone activity does not look right on Apple Watch",
+      "platforms_any": ["watchos"],
+      "modules_any": ["active-activity"],
+      "symptom": "The paired Watch Smart Stack does not show the intended compact information.",
+      "checks": [
+        "Confirm the Live Activity starts on its supported origin device and inspect the paired Watch presentation.",
+        "Review compact content for legibility and privacy on the Watch.",
+        "If a persistent Watch surface is needed, specify a separate WidgetKit widget or complication."
+      ],
+      "source": "https://developer.apple.com/design/human-interface-guidelines/live-activities"
+    },
+    {
+      "id": "widget-refresh",
+      "title": "Widget is missing or refreshes later than expected",
+      "platforms_any": [],
+      "modules_any": ["widgets"],
+      "symptom": "A widget has stale data, does not appear in the gallery, or misses a desired update time.",
+      "checks": [
+        "Check widget family, kind, extension configuration, timeline entries, and placeholder/snapshot states.",
+        "Check shared data availability between app and extension.",
+        "Account for system-controlled reload budgets; use an activity for a bounded live event where appropriate."
+      ],
+      "source": "https://developer.apple.com/documentation/widgetkit/keeping-a-widget-up-to-date"
+    },
+    {
+      "id": "purchase-restore",
+      "title": "Purchase succeeds but access or restore fails",
+      "platforms_any": [],
+      "modules_any": ["commerce"],
+      "symptom": "A customer cannot unlock, restore, or retain the expected entitlement.",
+      "checks": [
+        "Verify product identifiers, StoreKit configuration, sandbox account, and App Store Connect state.",
+        "Test purchase, cancellation, expiration, refund, interrupted purchase, and restore paths.",
+        "Inspect verified transactions and entitlement state on a second device before changing paywall copy."
+      ],
+      "source": "https://developer.apple.com/documentation/storekit/testing-at-all-stages-of-development-with-xcode-and-the-sandbox"
+    },
+    {
+      "id": "sync-conflict",
+      "title": "Data differs between devices",
+      "platforms_any": [],
+      "modules_any": ["sync"],
+      "symptom": "Edits are delayed, missing, duplicated, or conflict across devices.",
+      "checks": [
+        "Confirm account, iCloud availability, container, network state, and whether sync is enabled.",
+        "Reproduce offline edits and concurrent changes with two devices and record conflict resolution.",
+        "Keep local work usable during a sync delay and expose a recovery route for failed data transfer."
+      ],
+      "source": "https://developer.apple.com/documentation/swiftdata/syncing-model-data-across-a-persons-devices"
+    },
+    {
+      "id": "background-stop",
+      "title": "Work stops when the app is backgrounded or locked",
+      "platforms_any": [],
+      "modules_any": ["background-work"],
+      "symptom": "Upload, transfer, recording, or scheduled work stops or finishes late.",
+      "checks": [
+        "Identify the supported background API and the actual task type before adding a background mode.",
+        "Reproduce after lock, termination, low power, and poor network conditions on a physical device.",
+        "Make progress resumable and show the user when work is paused or requires reopening the app."
+      ],
+      "source": "https://developer.apple.com/documentation/backgroundtasks"
+    },
+    {
+      "id": "notification-missing",
+      "title": "Notification is not delivered or shown",
+      "platforms_any": [],
+      "modules_any": ["notifications"],
+      "symptom": "A scheduled or remote notification does not reach the expected user surface.",
+      "checks": [
+        "Check authorization, device settings, Focus, delivery environment, and token or scheduling state.",
+        "Separate server acceptance from device delivery and presentation in diagnostics.",
+        "Test denied permission and in-app recovery without repeating a coercive prompt."
+      ],
+      "source": "https://developer.apple.com/documentation/usernotifications"
+    },
+    {
+      "id": "tvos-focus",
+      "title": "Apple TV navigation traps focus",
+      "platforms_any": ["tvos"],
+      "modules_any": [],
+      "symptom": "Remote input cannot reach a control or return from a screen.",
+      "checks": [
+        "Walk the full journey using only the remote and test initial focus, directional moves, and the back path.",
+        "Check focus order after loading, error, and empty-state changes.",
+        "Keep critical controls readable and reachable from a viewing distance."
+      ],
+      "source": "https://developer.apple.com/design/human-interface-guidelines/focus-and-selection"
+    },
+    {
+      "id": "visionos-comfort",
+      "title": "Vision Pro presentation is uncomfortable or misplaced",
+      "platforms_any": ["visionos"],
+      "modules_any": [],
+      "symptom": "A window or immersive element is difficult to read, target, or use comfortably.",
+      "checks": [
+        "Review viewing distance, element size, contrast, and placement in an actual headset when possible.",
+        "Test eye and hand input, window resizing, and transitions between immersion levels.",
+        "Keep a usable windowed path when an immersive experience is optional."
+      ],
+      "source": "https://developer.apple.com/design/human-interface-guidelines/spatial-layout/"
+    }
+  ]
+}

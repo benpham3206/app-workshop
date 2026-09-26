@@ -1,0 +1,314 @@
+{
+  "version": 2,
+  "title": "Your first Apple app, from idea to support",
+  "introduction": "Build one useful task on one primary device first. Add other Apple surfaces when they help that task. Each phase has a small piece of evidence that tells you when to move on.",
+  "phases": [
+    {
+      "id": "workspace",
+      "title": "Set up the workspace",
+      "goal": "Make your work reproducible before you make screens.",
+      "actions": [
+        {
+          "id": "workspace-01",
+          "text": "Install and open a compatible Xcode release on a Mac."
+        },
+        {
+          "id": "workspace-02",
+          "text": "Put the project under source control and record the Xcode and SDK versions."
+        },
+        {
+          "id": "workspace-03",
+          "text": "Run a tiny starter app in Simulator; use a physical device when the feature depends on hardware."
+        }
+      ],
+      "output": "A clean checkout that another person could open and run.",
+      "failure": "Tool versions, signing, or missing assets make later builds fail only on another machine.",
+      "recovery": "Write down the toolchain and build steps now; keep credentials out of the repository.",
+      "reference": "https://developer.apple.com/documentation/xcode/running-your-app-on-simulated-or-physical-devices"
+    },
+    {
+      "id": "problem",
+      "title": "Find a repeated problem",
+      "goal": "Choose a job people already try to complete.",
+      "actions": [
+        {
+          "id": "problem-01",
+          "text": "Describe the person and the moment the problem appears."
+        },
+        {
+          "id": "problem-02",
+          "text": "Watch or ask a few people how they handle it today."
+        },
+        {
+          "id": "problem-03",
+          "text": "Write down the free Apple feature or existing app you must beat."
+        }
+      ],
+      "output": "A one-sentence user problem with evidence from real behavior.",
+      "failure": "A clever feature is built before anyone needs it, so there is no reason to return.",
+      "recovery": "Narrow the idea to one recurring moment and ask people about their current workaround.",
+      "reference": "https://developer.apple.com/design/human-interface-guidelines/design-principles"
+    },
+    {
+      "id": "value",
+      "title": "Promise one useful result",
+      "goal": "Know what the person gets in the first session and why they would come back.",
+      "actions": [
+        {
+          "id": "value-01",
+          "text": "Write the first useful result in plain language."
+        },
+        {
+          "id": "value-02",
+          "text": "Describe the repeat-use trigger and the smallest version that delivers it."
+        },
+        {
+          "id": "value-03",
+          "text": "Choose free, one-time, or subscription value only after the ongoing job is clear."
+        }
+      ],
+      "output": "A brief with first result, return loop, success measure, and non-goals.",
+      "failure": "Scope expands faster than proof of value, while pricing is chosen from benchmarks rather than this product.",
+      "recovery": "Cut the first release back to one complete result and treat pricing as a hypothesis.",
+      "reference": "https://developer.apple.com/app-store/subscriptions/"
+    },
+    {
+      "id": "platform",
+      "title": "Choose the first device",
+      "goal": "Start where the job is easiest to perform well.",
+      "actions": [
+        {
+          "id": "platform-01",
+          "text": "Pick one primary platform and minimum OS version."
+        },
+        {
+          "id": "platform-02",
+          "text": "List what each additional device would uniquely contribute and choose representative hardware for performance checks."
+        },
+        {
+          "id": "platform-03",
+          "text": "Check APIs, entitlements, permissions, and hardware before promising a surface."
+        }
+      ],
+      "output": "A platform and capability matrix with one primary target.",
+      "failure": "Supporting every device from day one creates many layouts and tests before the core job works.",
+      "recovery": "Keep shared meaning and data, but add native device presentations one at a time.",
+      "reference": "https://developer.apple.com/documentation/xcode/configuring-a-new-target-in-your-project/"
+    },
+    {
+      "id": "flow",
+      "title": "Draw the complete journey",
+      "goal": "Make the action understandable from entry through success and recovery.",
+      "actions": [
+        {
+          "id": "flow-01",
+          "text": "Draw launch, first action, result, repeat use, and exit."
+        },
+        {
+          "id": "flow-02",
+          "text": "For each important action, specify button label, feedback, failure, retry, and undo."
+        },
+        {
+          "id": "flow-03",
+          "text": "Include empty, offline, permission-denied, and accessibility paths that apply."
+        }
+      ],
+      "output": "A flowchart, action contracts, and state inventory.",
+      "failure": "Happy-path screens look polished while errors or permissions strand the user.",
+      "recovery": "Walk the journey with a novice and deliberately trigger a failure before adding polish.",
+      "reference": "https://developer.apple.com/design/human-interface-guidelines/"
+    },
+    {
+      "id": "identity",
+      "title": "Choose a visual identity",
+      "goal": "Make the product recognizable while keeping native behavior clear.",
+      "actions": [
+        {
+          "id": "identity-01",
+          "text": "Select a personality recipe and define semantic colors, type, copy, and motion."
+        },
+        {
+          "id": "identity-02",
+          "text": "Use native Liquid Glass navigation and controls where supported; keep the content layer clear and define an earlier-OS fallback."
+        },
+        {
+          "id": "identity-03",
+          "text": "Brief the app icon from the product promise; explore several concepts."
+        },
+        {
+          "id": "identity-04",
+          "text": "Preview light, dark, contrast, reduced transparency, larger text, reduced motion, and icon variants."
+        }
+      ],
+      "output": "Identity decisions, design tokens, editable icon source, and reviewed previews.",
+      "failure": "A pretty mockup hides weak labels, low contrast, or an icon that disappears at small size.",
+      "recovery": "Test native controls and actual-size icon previews before custom styling spreads.",
+      "reference": "https://developer.apple.com/design/human-interface-guidelines/app-icons"
+    },
+    {
+      "id": "foundation",
+      "title": "Create the app foundation",
+      "goal": "Make the smallest native project that can run and evolve.",
+      "actions": [
+        {
+          "id": "foundation-01",
+          "text": "Create the app target, bundle identifier, scene, assets, and focused tests."
+        },
+        {
+          "id": "foundation-02",
+          "text": "Choose local storage and data ownership before adding sync or accounts."
+        },
+        {
+          "id": "foundation-03",
+          "text": "Add an extension or entitlement only for a selected capability."
+        }
+      ],
+      "output": "A running native app with recorded project settings and an empty-state preview.",
+      "failure": "Premature packages, backends, and extensions slow every change and increase signing failures.",
+      "recovery": "Remove unused layers and make the first target build cleanly before adding another.",
+      "reference": "https://developer.apple.com/documentation/xcode/configuring-a-new-target-in-your-project/"
+    },
+    {
+      "id": "slice",
+      "title": "Build one complete task",
+      "goal": "Ship a thin path from launch to the promised result.",
+      "actions": [
+        {
+          "id": "slice-01",
+          "text": "Implement the action and its real state transitions."
+        },
+        {
+          "id": "slice-02",
+          "text": "Make data durable enough for the job and preserve user work on failure."
+        },
+        {
+          "id": "slice-03",
+          "text": "Run it on the primary device and fix confusing points."
+        }
+      ],
+      "output": "A demonstrated useful result, including a failure and recovery route.",
+      "failure": "Many half-built features create activity without a usable product.",
+      "recovery": "Stop starting new surfaces until one journey is complete end to end.",
+      "reference": "https://developer.apple.com/documentation/swiftui/managing-user-interface-state/"
+    },
+    {
+      "id": "integrations",
+      "title": "Add useful system surfaces",
+      "goal": "Let people reach the same job in the right context.",
+      "actions": [
+        {
+          "id": "integrations-01",
+          "text": "Select widgets, Live Activities, Watch, Mac commands, App Intents, sharing, or notifications only for a specific job."
+        },
+        {
+          "id": "integrations-02",
+          "text": "Define each surface's lifecycle, privacy, fallback, and tap destination."
+        },
+        {
+          "id": "integrations-03",
+          "text": "Test it on supported hardware and with the main app unavailable or suspended."
+        }
+      ],
+      "output": "A verified module contract for every selected system surface.",
+      "failure": "Extensions, background rules, and refresh budgets are assumed to behave like the foreground app.",
+      "recovery": "Treat each surface as an independent delivery path with its own limits and diagnostics.",
+      "reference": "https://developer.apple.com/documentation/widgetkit/developing-a-widgetkit-strategy/"
+    },
+    {
+      "id": "quality",
+      "title": "Test the whole experience",
+      "goal": "Find failures before a stranger does.",
+      "actions": [
+        {
+          "id": "quality-01",
+          "text": "Test the core result, restart, offline, denied permissions, large text, VoiceOver, and localization."
+        },
+        {
+          "id": "quality-02",
+          "text": "Review Liquid Glass legibility and input behavior in each selected platform and appearance."
+        },
+        {
+          "id": "quality-03",
+          "text": "Measure launch, interaction hitches, memory, energy, and long-session behavior on representative physical devices; compare with a recorded baseline."
+        },
+        {
+          "id": "quality-04",
+          "text": "Check data lifecycle, privacy declarations, and crashes; run purchase and restore tests if the app sells digital goods."
+        }
+      ],
+      "output": "A test matrix with device, OS, build, result, and remaining risks.",
+      "failure": "Simulator success is mistaken for device, account, network, or distribution success.",
+      "recovery": "Reproduce critical paths on hardware and record exactly what was and was not checked.",
+      "reference": "https://developer.apple.com/documentation/xcode/performance-and-metrics"
+    },
+    {
+      "id": "beta",
+      "title": "Put it in testers' hands",
+      "goal": "Learn what happens when you are not guiding the user.",
+      "actions": [
+        {
+          "id": "beta-01",
+          "text": "Prepare signing and an App Store Connect record for TestFlight where applicable."
+        },
+        {
+          "id": "beta-02",
+          "text": "Give testers a task, not a tour of the features."
+        },
+        {
+          "id": "beta-03",
+          "text": "Collect confusion, crashes, failed results, and repeated requests."
+        }
+      ],
+      "output": "A triaged beta feedback list and a stable release candidate.",
+      "failure": "Friendly testers say the app looks good while the core job remains hard to finish.",
+      "recovery": "Observe task completion and fix the most repeated block before adding features.",
+      "reference": "https://developer.apple.com/help/app-store-connect/test-a-beta-version/testflight-overview/"
+    },
+    {
+      "id": "release",
+      "title": "Prepare and ship honestly",
+      "goal": "Make the build, listing, payment, privacy, and support promise agree.",
+      "actions": [
+        {
+          "id": "release-01",
+          "text": "Prepare screenshots, description, support and privacy URLs, rating, regions, and review access."
+        },
+        {
+          "id": "release-02",
+          "text": "Check signed build, entitlements, app icon, purchases, restore, and export compliance as applicable."
+        },
+        {
+          "id": "release-03",
+          "text": "Choose App Store release or a direct Mac distribution path and complete its requirements."
+        }
+      ],
+      "output": "An approved release candidate with a complete distribution checklist.",
+      "failure": "Store metadata or signing describes a different app than the one submitted.",
+      "recovery": "Run the reviewer path from a clean install and compare every claim with the final build.",
+      "reference": "https://developer.apple.com/documentation/xcode/preparing-your-app-for-distribution"
+    },
+    {
+      "id": "operate",
+      "title": "Support and improve it",
+      "goal": "Keep the app useful after launch.",
+      "actions": [
+        {
+          "id": "operate-01",
+          "text": "Watch crashes, support requests, reviews, performance, and repeat task completion."
+        },
+        {
+          "id": "operate-02",
+          "text": "Fix reliability and confusing recovery before expanding scope."
+        },
+        {
+          "id": "operate-03",
+          "text": "Review each new OS and device for compatibility and update the app's promises."
+        }
+      ],
+      "output": "A support loop, release notes, compatibility record, and next evidence-based change.",
+      "failure": "The app ships once, then OS changes and unresolved customer friction accumulate.",
+      "recovery": "Reserve time for maintenance and let observed problems choose the next iteration.",
+      "reference": "https://developer.apple.com/help/app-store-connect/get-started/app-store-connect-workflow"
+    }
+  ]
+}

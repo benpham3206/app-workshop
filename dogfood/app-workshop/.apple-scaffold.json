@@ -1,0 +1,15 @@
+{
+  "template_version": "0.4.0",
+  "selection": {
+    "schema_version": 1,
+    "project": {
+      "name": "App Workshop",
+      "slug": "app-workshop"
+    },
+    "identity": "playful-kinetic",
+    "platforms": [
+      "macos"
+    ],
+    "modules": []
+  }
+}

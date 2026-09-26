@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "app_name": "App Workshop",
+  "identity": "playful-kinetic",
+  "platforms": [
+    "macos"
+  ],
+  "product_promise": "Guide a first-time Apple app builder from an idea through a repeatable launch process",
+  "visual_motifs": ["connected steps", "forward path", "finished task"],
+  "avoid": ["Apple logos", "literal device silhouettes", "tiny lettering"]
+}
