@@ -10,8 +10,8 @@ A factory for Apple apps, built for one person working with AI agents. It takes 
 | 2. Setup (week 1) | Enroll in the Apple Developer Program; have the Account Holder accept the Paid Apps Agreement and finish tax and banking. Clear the app name. These take days to weeks and block selling. | Generated `docs/BEGINNER-GUIDE.md`, research `REPORT.md` |
 | 3. Build | Generate a runnable app and build one complete task end to end. | `make generate … STARTER=ios` |
 | 4. Sell | Choose one-time or subscription value, then follow the commerce contract. | `modules/commerce/README.md` |
-| 5. Ship | Test with TestFlight, fill the store page, and submit with a released (non-beta) Xcode. | Generated `docs/release/CHECKLIST.md`, `STORE-PAGE.md` |
-| 6. First customer | Launch, measure the funnel, and watch for the first renewal. | Generated `docs/operations/MEASUREMENT.md`, research `REPORT.md` |
+| 5. Ship | Publish privacy, terms, and support pages; test with TestFlight; fill the store page; submit with a released (non-beta) Xcode. | Generated `docs/release/CHECKLIST.md`, `docs/legal/` |
+| 6. First customer | Build a waitlist, tune the listing, decide on ads, and watch the funnel to the first renewal. | Generated `docs/BEGINNER-GUIDE.md` (launch), `docs/operations/MEASUREMENT.md` |
 | 7. Operate | Fix crashes and confusion before adding features; review each new OS. | Generated `docs/TROUBLESHOOTING.md`, `docs/operations/WORKBOARD.md` |
 
 The research behind stages 2–6 (accounts, fees, payouts, App Review, StoreKit and RevenueCat, payment routes, legal and regional blockers, acquisition, failure modes) is in [`docs/research/app-store-to-first-subscriber/`](docs/research/app-store-to-first-subscriber/REPORT.md). It is dated; recheck Apple's rules before relying on it.
@@ -53,8 +53,6 @@ Agents start at [`AGENTS.md`](AGENTS.md). Assign work with [`docs/agents/TASK-PA
 
 These can block a first app, so plan for them:
 
-- **Launch and marketing.** The journey has no launch stage yet: waitlist, App Store keywords and screenshots, Apple Ads, launch channels. The research covers them (`06_first_customer_acquisition.md`); the process does not.
-- **Privacy policy, terms, and support pages.** Apple requires a privacy policy URL and a support URL, and subscription apps need Terms of Use links. You must write and host these yourself.
 - **Purchase code.** Commerce is a contract, not an implementation. The starter has no paywall or StoreKit code.
 - **A macOS starter.** Only iOS has a runnable starter. Mac apps that cannot pass Mac App Store review need Developer ID signing, notarization, and their own payment provider.
 - **Release automation.** Upload, screenshots, and review status are manual; the proposed agent tooling is in `07_agent_operable_pipeline.md`.
