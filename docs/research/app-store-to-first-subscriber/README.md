@@ -1,6 +1,6 @@
 # From app to first renewing subscriber (research, 2026-09-27)
 
-Raw research notes for a solo developer taking an Apple app to its first renewing auto-renewable subscriber, including the non-code blockers. Researchers propose; they do not implement. Each note ends with "Proposed structural responses for app-workshop"; none are applied yet.
+Research notes for a solo developer taking an Apple app to its first renewing auto-renewable subscriber, including non-code blockers. The notes retain their research proposals; [REPORT.md](REPORT.md) is the decision synthesis.
 
 **`08_factcheck.md` overrides notes 01–07 where they disagree.** It verified 23 high-stakes claims against primary sources (15 confirmed, 8 corrected or qualified).
 
@@ -16,7 +16,8 @@ Raw research notes for a solo developer taking an Apple app to its first renewin
 | 08 | Independent fact-check |
 | 09 | Build vs. buy per capability (native default vs. vendor SDKs) |
 | 10 | Failure modes and guards, ranked |
+| [REPORT](REPORT.md) | Decision-ready synthesis and critical path |
 
 Method: Claude subagents (Sonnet researchers; Opus fact-check and failure-mode review). Not legal or tax advice. Recheck dated claims before relying on them.
 
-Pending: synthesized report; applying the proposals to `modules/`, release templates, `config/troubleshooting.json`, `config/process.json`, `tooling/readiness.py`.
+The report synthesizes these dated notes; the fact-check takes precedence over notes 01–07.

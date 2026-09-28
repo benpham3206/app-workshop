@@ -2,11 +2,22 @@
 """Check a generated app's structure and show which planning decisions remain open."""
 
 import argparse
+import fnmatch
 import json
 import re
+import subprocess
 import sys
 from pathlib import Path
 from urllib.parse import unquote
+
+
+SECRET_NAMES = (
+    ".env", ".env.*", "*.env", "*.p8", "*.p12", "*.pfx", "*.pem", "*.key",
+    "*.mobileprovision", "*.provisionprofile", "id_rsa", "id_ed25519",
+)
+SECRET_EXAMPLES = (".env.example", "example.env", "*.env.example", "*.example.env")
+PRIVATE_KEY_HEADER = re.compile(rb"-----BEGIN (?:[A-Z0-9]+ )*PRIVATE KEY-----")
+REVENUECAT_SECRET = re.compile(rb"(?<![A-Za-z0-9_])sk_[A-Za-z0-9_]{16,}")
 
 
 REQUIRED = (
@@ -90,11 +101,41 @@ def inspect(root):
             destination = unquote(target.split("#", 1)[0])
             if destination and not (path.parent / destination).resolve().exists():
                 errors.append(f"Broken link in {relative}: {target}")
+    errors.extend(tracked_secrets(root))
     for relative in DECISIONS:
         path = root / relative
         if path.is_file() and re.search(r"\bPending\b", path.read_text(encoding="utf-8"), re.IGNORECASE):
             pending.append(relative)
     return errors, pending
+
+
+def tracked_secrets(root):
+    """Reject tracked signing assets and private-key or secret-key content."""
+    try:
+        top = subprocess.run(["git", "-C", str(root), "rev-parse", "--show-toplevel"],
+                             capture_output=True, text=True, check=True).stdout.strip()
+        if Path(top).resolve() != root:
+            return []
+        listed = subprocess.run(["git", "-C", str(root), "ls-files", "-z"],
+                                capture_output=True, text=True, check=True).stdout
+    except (OSError, subprocess.CalledProcessError):
+        return []
+    found = []
+    for path in filter(None, listed.split("\0")):
+        name = path.rsplit("/", 1)[-1]
+        if not any(fnmatch.fnmatch(name, pattern) for pattern in SECRET_EXAMPLES) and any(fnmatch.fnmatch(name, pattern) for pattern in SECRET_NAMES):
+            found.append(f"Secret or signing file is tracked by Git: {path}")
+        tracked = root / path
+        if tracked.is_symlink() or not tracked.is_file():
+            continue
+        try:
+            content = tracked.read_bytes()
+        except OSError as exc:
+            found.append(f"Cannot scan tracked file {path}: {exc}")
+            continue
+        if PRIVATE_KEY_HEADER.search(content) or REVENUECAT_SECRET.search(content):
+            found.append(f"Private key or secret token is tracked by Git: {path}")
+    return found
 
 
 def main(argv=None):

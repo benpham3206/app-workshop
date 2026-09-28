@@ -27,6 +27,8 @@ Do this:
 - Install and open a compatible Xcode release on a Mac.
 - Put the project under source control and record the Xcode and SDK versions.
 - Run a tiny starter app in Simulator; use a physical device when the feature depends on hardware.
+- If paid distribution is planned, enroll early; have the Account Holder accept the latest Paid Apps Agreement and complete tax and banking information before building the purchase flow. Apple source checked 2026-09-27: https://developer.apple.com/help/app-store-connect/manage-agreements/sign-and-update-agreements
+- Before fixing the app name, clear the chosen name and marks in the intended storefront regions and decide whether the public seller will be an individual or legal organization. Apple seller-name source checked 2026-09-27: https://developer.apple.com/help/account/membership/program-enrollment/
 
 **Move on when:** A clean checkout that another person could open and run.
 

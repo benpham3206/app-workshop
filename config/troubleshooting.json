@@ -221,6 +221,71 @@
         "Keep a usable windowed path when an immersive experience is optional."
       ],
       "source": "https://developer.apple.com/design/human-interface-guidelines/spatial-layout/"
+    },
+    {
+      "id": "paid-agreement-blocked",
+      "title": "Paid app or IAP cannot be created or submitted",
+      "platforms_any": [],
+      "modules_any": ["commerce"],
+      "symptom": "App Store Connect blocks IAP creation or a paid submission before code is reviewed.",
+      "checks": [
+        "Have the Account Holder confirm the latest Paid Apps Agreement was accepted before creating IAP.",
+        "For submission, confirm the agreement is Active and complete the required tax and banking information.",
+        "Inspect the agreement status and resolve Pending User Info or verification rather than changing StoreKit code."
+      ],
+      "source": "https://developer.apple.com/help/app-store-connect/manage-agreements/sign-and-update-agreements"
+    },
+    {
+      "id": "first-iap-not-submitted",
+      "title": "First purchase product is not reviewed",
+      "platforms_any": [],
+      "modules_any": ["commerce"],
+      "symptom": "An initial IAP remains unapproved although the app version was submitted.",
+      "checks": [
+        "Identify whether this is the first IAP of its type for the app.",
+        "Attach the first item of that type to a new app-version submission.",
+        "After one item of that type is approved, check the separate-submission path for later items."
+      ],
+      "source": "https://developer.apple.com/help/app-store-connect/manage-submissions-to-app-review/submit-an-in-app-purchase"
+    },
+    {
+      "id": "beta-toolchain-submission",
+      "title": "App Store submission rejects a beta toolchain build",
+      "platforms_any": [],
+      "modules_any": [],
+      "symptom": "A build used in TestFlight cannot be submitted to the App Store.",
+      "checks": [
+        "Record the exact Xcode and SDK build used for the archive.",
+        "Check the current App Store Connect release notes for App Store eligible release or RC builds and current SDK minimums.",
+        "Use the allowed internal or external TestFlight path for beta builds while producing a separate eligible App Store archive."
+      ],
+      "source": "https://developer.apple.com/help/app-store-connect/release-notes/"
+    },
+    {
+      "id": "commerce-entitlement-transition",
+      "title": "Access is wrong after renewal or refund",
+      "platforms_any": [],
+      "modules_any": ["commerce"],
+      "symptom": "A subscriber gains or loses access incorrectly during grace, expiry, or revocation.",
+      "checks": [
+        "Inspect verified current entitlements and transaction updates at launch and after the event.",
+        "Distinguish a disabled auto-renewal from expiration, billing grace, and a refunded or revoked transaction.",
+        "Reproduce the chosen grace policy in StoreKit Test before relying on a device-clock calculation."
+      ],
+      "source": "https://developer.apple.com/documentation/storekit/transaction/currententitlements"
+    },
+    {
+      "id": "eu-trader-unavailable",
+      "title": "App disappears from EU storefronts",
+      "platforms_any": [],
+      "modules_any": [],
+      "symptom": "An intended EU listing is unavailable despite an approved app.",
+      "checks": [
+        "Check the app's EU territory availability in App Store Connect.",
+        "Confirm the developer's DSA trader status was submitted and verified.",
+        "Resolve an unverified trader status before investigating a binary or search-index issue."
+      ],
+      "source": "https://developer.apple.com/news/?id=einwn76m"
     }
   ]
 }
