@@ -1,97 +1,76 @@
-# Apple ecosystem boilerplate
+# App Workshop
 
-A product-neutral planning scaffold for apps across Apple platforms. It includes selectable identity recipes, platform profiles, optional capability contracts, an interaction library, an icon concept planner, and a generator for likely troubleshooting checks. It does not choose a product. With `--starter ios` it also generates a minimal iOS app that builds, tests, and launches in Simulator.
+A factory for Apple apps, built for one person working with AI agents. It takes you from an idea to a running app, through App Review, to a first renewing subscriber. It does not choose your product: you pick the job, platforms, and capabilities; it generates the plan, the starter app, the checklists, and the guardrails.
 
-`PRINCIPLES.md` defines the quality standard for builders and agents: great and outstanding are the baseline; timeless is the long-term goal.
-`core/principles/GLASS-AND-PERFORMANCE.md` makes native Liquid Glass and responsive performance across selected devices explicit design and release gates.
-`core/principles/SECURE-FAST-DEFAULTS.md` gives each generated app a state, permission, privacy, and responsiveness contract for its first real code slice.
-`design/NATIVE-REVIEW.md` is a review record for layout, controls, states, accessibility, icon, and performance on a runnable app. It requires evidence rather than visual claims from a template.
-`docs/compatibility/REVIEW.md` gives each app a repeatable review when an Apple SDK, OS, or device class changes.
-`platforms/ios/ADAPTIVE-LAYOUT.md` turns iPhone Duo into the iPhone layout stress test; iOS projects receive it as `docs/compatibility/IPHONE-DUO.md`.
+## The path
 
-For delegated work, `docs/agents/NAVIGATION.md` routes an agent to the source of truth and downstream outputs. `docs/agents/TASK-PACKET.md` defines its file scope, handoff, and evidence. Each generated app receives its own selection-aware navigation map.
+| Stage | What you do | Where to start |
+| --- | --- | --- |
+| 1. Idea | Name the person, the repeated problem, the first useful result, and why they would return. | `docs/process/START-TO-SHIP.md` |
+| 2. Setup (week 1) | Enroll in the Apple Developer Program; have the Account Holder accept the Paid Apps Agreement and finish tax and banking. Clear the app name. These take days to weeks and block selling. | Generated `docs/BEGINNER-GUIDE.md`, research `REPORT.md` |
+| 3. Build | Generate a runnable app and build one complete task end to end. | `make generate … STARTER=ios` |
+| 4. Sell | Choose one-time or subscription value, then follow the commerce contract. | `modules/commerce/README.md` |
+| 5. Ship | Test with TestFlight, fill the store page, and submit with a released (non-beta) Xcode. | Generated `docs/release/CHECKLIST.md`, `STORE-PAGE.md` |
+| 6. First customer | Launch, measure the funnel, and watch for the first renewal. | Generated `docs/operations/MEASUREMENT.md`, research `REPORT.md` |
+| 7. Operate | Fix crashes and confusion before adding features; review each new OS. | Generated `docs/TROUBLESHOOTING.md`, `docs/operations/WORKBOARD.md` |
 
-## Try it
+The research behind stages 2–6 (accounts, fees, payouts, App Review, StoreKit and RevenueCat, payment routes, legal and regional blockers, acquisition, failure modes) is in [`docs/research/app-store-to-first-subscriber/`](docs/research/app-store-to-first-subscriber/REPORT.md). It is dated; recheck Apple's rules before relying on it.
 
-From this directory:
-
-```sh
-make validate
-make verify
-make generate
-```
-
-The sample selection in `examples/neutral-preview/project.json` generates `dist/neutral-preview/`. The generated project has a brief, identity decision, flowchart, interaction guides, icon guide, architecture and privacy prompts, platform and module notes, release checklist, and tailored troubleshooting guide. `dist/` is ignored by Git. Generation refuses to overwrite a nonempty destination.
-
-To try another selection, copy the sample JSON and change its identity, platforms, and modules from `config/catalog.json`:
+## Quick start
 
 ```sh
-make validate CONFIG=path/to/project.json
-make generate CONFIG=path/to/project.json OUTPUT=dist/my-preview
-make troubleshoot CONFIG=path/to/project.json
+make verify                                   # factory self-test
+make generate                                 # preview into dist/neutral-preview/
+make generate CONFIG=my-app.json OUTPUT=dist/my-app STARTER=ios
+cd dist/my-app && make run                    # build and launch in Simulator (needs Xcode)
+make test                                     # Swift Testing state tests
+make check                                    # structure, release gates, and tracked-secret scan
 ```
 
-To get a runnable iOS app on day one, add the starter. It needs Xcode; set `DEVELOPER_DIR` if Xcode is not the active developer directory.
+Start `my-app.json` by copying `examples/neutral-preview/project.json` and choosing an identity, platforms, and modules from `config/catalog.json`. Generation never overwrites a nonempty folder. Set `DEVELOPER_DIR` if Xcode is not the active developer directory.
+
+Already have an app? Add the planning layer without touching app code, and pull later factory fixes:
 
 ```sh
-make generate CONFIG=path/to/project.json OUTPUT=dist/my-app STARTER=ios
-cd dist/my-app && make run    # build and launch in Simulator
-make test                     # Swift Testing state tests
+make adopt CONFIG=my-app.json PROJECT=path/to/app
+make update PROJECT=path/to/app               # report only
+make update PROJECT=path/to/app APPLY=1       # update files you never edited
 ```
 
-The starter is an Xcode project with synchronized folders, so new Swift files in `App/` or `AppTests/` build without project-file edits. It uses Swift 6 language mode, a `Logger`, and one task owner with tests for duplicate taps and failure recovery. `make verify-xcode` runs the same generate-and-test check from this factory.
+## What you get
 
-To add the planning and operating layer to an app that already exists, adopt it:
+- **A starter app** (`--starter ios`): Xcode project, Swift 6, one task owner with tests, `make run` and `make test`.
+- **Planning documents**: brief, flows, action contracts, identity and icon brief, privacy plan, architecture prompts.
+- **Capability contracts** for optional modules (commerce, accounts, sync, notifications, widgets, Live Activities, App Intents, and more), each with a native-first build-vs-buy table.
+- **Release gates**: checklist, store page, evidence-backed gates checked by `make check`, and a troubleshooting guide tailored to your selection.
+- **Guardrails**: a tracked-secret scan (file names and contents), no-rollback release rules, and an entitlement-failure policy for purchases.
 
-```sh
-make adopt CONFIG=path/to/project.json PROJECT=path/to/app
-```
+## Working with agents
 
-ADOPT never touches app code. It keeps an existing `README.md`, `Makefile`, `.gitignore`, and `.github/` files, appends the generated rules to an existing `AGENTS.md`, and stops before writing anything if any other generated path already exists. Kept and merged files are recorded as unmanaged, so `update` leaves them alone.
+Agents start at [`AGENTS.md`](AGENTS.md). Assign work with [`docs/agents/TASK-PACKET.md`](docs/agents/TASK-PACKET.md): a bounded goal, exact write scope, granted capabilities, and the evidence that proves it is done. [`docs/agents/NAVIGATION.md`](docs/agents/NAVIGATION.md) maps each topic to its source of truth. [`PRINCIPLES.md`](PRINCIPLES.md) defines the quality bar and the verification ladder. Signing, App Store Connect, pricing, and submission stay with the builder unless a packet grants one named action.
 
-To adopt later factory fixes in an existing app, run a dry run first:
+## Not included yet
 
-```sh
-make update PROJECT=path/to/app          # report only
-make update PROJECT=path/to/app APPLY=1  # write files the builder never edited
-```
+These can block a first app, so plan for them:
 
-The manifest records a hash of each generated file. A file the builder edited is reported as a conflict with a diff and is never overwritten. Projects generated before 0.5.0 have no hashes, so every changed file is a conflict.
+- **Launch and marketing.** The journey has no launch stage yet: waitlist, App Store keywords and screenshots, Apple Ads, launch channels. The research covers them (`06_first_customer_acquisition.md`); the process does not.
+- **Privacy policy, terms, and support pages.** Apple requires a privacy policy URL and a support URL, and subscription apps need Terms of Use links. You must write and host these yourself.
+- **Purchase code.** Commerce is a contract, not an implementation. The starter has no paywall or StoreKit code.
+- **A macOS starter.** Only iOS has a runnable starter. Mac apps that cannot pass Mac App Store review need Developer ID signing, notarization, and their own payment provider.
+- **Release automation.** Upload, screenshots, and review status are manual; the proposed agent tooling is in `07_agent_operable_pipeline.md`.
 
-Each generated project includes `make check` and `make icon-plan`. Run `make check` inside the generated project to inspect its structure and its gates in `docs/quality/gates.json`. A gate is `open` or `done`; `done` must cite evidence files that exist. Once a real app has a purpose and icon motifs, fill its `design/icon-brief.json` and run `make icon-plan` there. The planner creates concept prompts and a production checklist; artwork and Xcode previews remain separate steps.
+## Repository map
 
-The configuration contract is in `config/schema/project.schema.json`. The CLI performs its own selection checks; the JSON Schema is provided for editors and external tooling.
-
-## Learn the system
-
-The change discipline, verification ladder, defect loop, capability levels, agent roles, and authority rules are adapted from [agent-engineering](https://github.com/benpham3206/agent-engineering) for Apple apps. So are ADOPT, the tracked-secret check, and the generated CI and pull request template.
-
-
-1. Read `docs/research/apple-guideline-audit.md` for Apple guidance and open questions.
-   Follow `docs/process/START-TO-SHIP.md` for the full learning path.
-2. Read `ux/interactions/README.md` for action behavior, button states, menus, and inputs. Use `ux/patterns/` for onboarding, permissions, settings, and help.
-3. Read `design/app-icon/README.md` and the three `design/identity/` recipes.
-   `docs/process/SOLO-AI-OPERATING-SYSTEM.md` maps the builder-and-agent workflow from discovery through support.
-   `docs/process/PORTFOLIO-ARCHITECTURE.md` covers reuse across several apps and future Apple devices.
-4. Generate the neutral preview and follow its `README.md` from user job to flow, action contracts, design, platform adaptations, and likely failure checks.
-5. Choose a real product before adding app targets, entitlements, dependencies, or payment behavior.
-
-## Directory map
-
-| Directory | Intended responsibility |
+| Directory | Contents |
 | --- | --- |
-| `core/` | Stable principles and interaction contracts shared by future products. |
-| `config/` | Selection catalog, schema, and troubleshooting rules. |
-| `design/` | Identity directions, semantic tokens, components, motion, content, assets, and icon process. |
-| `ux/` | Flows, action behavior, inputs, states, and accessibility. |
-| `platforms/` | Native presentation and input rules per Apple platform. |
-| `modules/` | Optional capabilities including Live Activities, widgets, commerce, accounts, notifications, and sync. |
-| `templates/` | Files copied into a generated project. |
-| `tooling/` | Validation, generation, icon concept planning, and troubleshooting tools. |
-| `examples/` | A neutral sample to inspect the system without choosing a product. |
-| `tests/` | Generator contract tests and future app checks. |
-| `docs/` | Apple research, decisions, privacy, localization, performance, compatibility, release, and support notes. |
+| `core/` | Principles shared by every app (performance, Liquid Glass, secure defaults). |
+| `config/` | Selection catalog, schema, beginner journey, troubleshooting rules. |
+| `design/`, `ux/` | Identity recipes, icon process, interaction contracts, onboarding and permission patterns. |
+| `platforms/` | Native behavior for each Apple platform. |
+| `modules/` | Optional capability contracts. |
+| `templates/`, `tooling/` | Generated files and the generator, checker, and planners. |
+| `docs/` | Process, research, compatibility, and agent guides. |
+| `dogfood/` | App Workshop's own Mac app, built with the factory. |
+| `tests/` | Generator contract tests (`make verify`). |
 
-`modules/active-activity/` separates the activity contract from its presentations. An iPhone or iPad Live Activity can appear in the Dynamic Island and Lock Screen, and on a paired Watch in the Smart Stack. A persistent Watch widget belongs in the separate `modules/widgets/` module. These are distinct system features even when they show the same underlying state.
-
-The three directories under `design/identity/` are selectable starting directions for future apps: Playful/Kinetic, Calm/Precise, and Dark/Technical. They do not define a product or force one appearance on every app. Read `AGENTS.md` before changing this boilerplate.
+Adapted from [agent-engineering](https://github.com/benpham3206/agent-engineering) for Apple apps.
