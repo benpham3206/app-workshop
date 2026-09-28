@@ -354,6 +354,18 @@ class ScaffoldContracts(unittest.TestCase):
             git("rm", "-q", "--cached", "AuthKey_TEST.p8")
             clean = subprocess.run(checker, cwd=output, capture_output=True, text=True)
             self.assertEqual(clean.returncode, 0, clean.stdout)
+            pasted = output / "pasted-credentials.txt"
+            pasted.write_text("prose mentioning sk_ is harmless\npublic appl_example_key\n")
+            git("add", "pasted-credentials.txt")
+            self.assertEqual(subprocess.run(checker, cwd=output, capture_output=True, text=True).returncode, 0)
+            pasted.write_text("-----BEGIN PRIVATE KEY-----\nfake test fixture\n")
+            leaked_pem = subprocess.run(checker, cwd=output, capture_output=True, text=True)
+            self.assertEqual(leaked_pem.returncode, 2, leaked_pem.stdout)
+            self.assertIn("tracked by Git: pasted-credentials.txt", leaked_pem.stdout)
+            pasted.write_text("sk_abcdefghijklmnopqrstuvwxyz123456\n")
+            leaked_token = subprocess.run(checker, cwd=output, capture_output=True, text=True)
+            self.assertEqual(leaked_token.returncode, 2, leaked_token.stdout)
+            self.assertIn("tracked by Git: pasted-credentials.txt", leaked_token.stdout)
 
     def test_adopt_adds_the_layer_without_touching_the_app(self):
         with tempfile.TemporaryDirectory() as directory:

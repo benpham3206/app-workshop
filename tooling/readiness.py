@@ -31,6 +31,8 @@ SECRET_NAMES = (
     "*.mobileprovision", "*.provisionprofile", "id_rsa", "id_ed25519",
 )
 SECRET_EXAMPLES = (".env.example", "example.env", "*.env.example", "*.example.env")
+PRIVATE_KEY_HEADER = re.compile(rb"-----BEGIN (?:[A-Z0-9]+ )*PRIVATE KEY-----")
+REVENUECAT_SECRET = re.compile(rb"(?<![A-Za-z0-9_])sk_[A-Za-z0-9_]{16,}")
 LINK = re.compile(r"(?<!!)\[[^\]]+\]\(([^)]+)\)")
 TOKEN = re.compile(r"\{\{[A-Z_]+\}\}")
 
@@ -105,7 +107,7 @@ def inspect(root):
 
 
 def tracked_secrets(root):
-    """Signing keys, certificates, profiles, and env files must never be tracked by Git."""
+    """Reject tracked signing assets and private-key or secret-key content."""
     try:
         top = subprocess.run(["git", "-C", str(root), "rev-parse", "--show-toplevel"],
                              capture_output=True, text=True, check=True).stdout.strip()
@@ -118,10 +120,18 @@ def tracked_secrets(root):
     found = []
     for path in filter(None, listed.split("\0")):
         name = path.rsplit("/", 1)[-1]
-        if any(fnmatch.fnmatch(name, pattern) for pattern in SECRET_EXAMPLES):
-            continue
-        if any(fnmatch.fnmatch(name, pattern) for pattern in SECRET_NAMES):
+        if not any(fnmatch.fnmatch(name, pattern) for pattern in SECRET_EXAMPLES) and any(fnmatch.fnmatch(name, pattern) for pattern in SECRET_NAMES):
             found.append(f"Secret or signing file is tracked by Git: {path}")
+        tracked = root / path
+        if tracked.is_symlink() or not tracked.is_file():
+            continue
+        try:
+            content = tracked.read_bytes()
+        except OSError as exc:
+            found.append(f"Cannot scan tracked file {path}: {exc}")
+            continue
+        if PRIVATE_KEY_HEADER.search(content) or REVENUECAT_SECRET.search(content):
+            found.append(f"Private key or secret token is tracked by Git: {path}")
     return found
 
 
