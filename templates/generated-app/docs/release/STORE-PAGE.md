@@ -16,6 +16,8 @@ Fill this for the real app and each chosen storefront. App Store Connect require
 | Export compliance and applicable category rules | Pending |
 | EU trader status and public contact details if EU storefronts are selected | Pending |
 
+Drafts and hosting steps for the privacy policy, support, and Terms of Use pages are in `docs/legal/README.md`.
+
 Check metadata against the actual build and supported devices. Run the reviewer path from a clean install. Keep screenshots truthful to the submitted version.
 
 Apple references: [App Store Connect workflow](https://developer.apple.com/help/app-store-connect/get-started/app-store-connect-workflow), [create an app record](https://developer.apple.com/help/app-store-connect/create-an-app-record/add-a-new-app), [submit an app](https://developer.apple.com/help/app-store-connect/manage-submissions-to-app-review/submit-an-app). Reviewed 2026-09-25.

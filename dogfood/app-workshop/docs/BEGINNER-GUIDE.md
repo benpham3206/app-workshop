@@ -16,7 +16,8 @@ Build one useful task on one primary device first. Add other Apple surfaces when
 10. [Test the whole experience](#10-test-the-whole-experience)
 11. [Put it in testers' hands](#11-put-it-in-testers'-hands)
 12. [Prepare and ship honestly](#12-prepare-and-ship-honestly)
-13. [Support and improve it](#13-support-and-improve-it)
+13. [Launch and find your first customers](#13-launch-and-find-your-first-customers)
+14. [Support and improve it](#14-support-and-improve-it)
 
 ## 1. Set up the workspace
 
@@ -238,7 +239,27 @@ Do this:
 
 [Apple reference](https://developer.apple.com/documentation/xcode/preparing-your-app-for-distribution)
 
-## 13. Support and improve it
+## 13. Launch and find your first customers
+
+**Aim:** Bring the right first people to the app and see where they stop.
+
+Do this:
+
+- Before launch day, gather a waitlist or TestFlight group from the people who have the problem, so launch is not your first contact with them.
+- Before launch day, review the listing for search: title, subtitle, and the 100-character keyword field. Make the first screenshots carry the promise, since the first one to three appear in search results. Add a Custom Product Page only if a specific audience or search term needs its own page.
+- In launch week, go to the people from the problem phase where they already gather, within one short window. Ask for a rating only after a person reaches a success moment; the system limits the prompt to three times in 365 days.
+- Decide about ads deliberately, or not at all. A first Apple Ads test can use Apple's own reporting, which this guide treats as needing no App Tracking Transparency (ATT) prompt (an inference; confirm before you spend). A third-party ad network or attribution SDK that combines data across apps counts as tracking: plan for the ATT prompt, an updated privacy label, and ad attribution (attribution details are unverified here). Ads shown inside your app are a separate consent and privacy decision, also unverified here. Apple source checked 2026-09-27: https://developer.apple.com/documentation/apptrackingtransparency
+- Watch the funnel from product page to install, trial if you offer one, first paid charge, and first renewal. Treat industry benchmarks as hypotheses, not targets. The first renewal is the second paid transaction, not the trial converting; it arrives one billing period after the first charge, so note the date to look. App Store Connect subscription analytics shows it by cohort; a backend is needed for per-subscriber alerts. Apple source checked 2026-09-27: https://developer.apple.com/app-store-connect/analytics/
+
+**Move on when:** A launch note with the audience reached, listing changes, the ads decision and its reason, funnel readings by stage, and whether a first renewal has been observed.
+
+**What can go wrong:** The listing goes live with no audience, so there is nobody to learn from; or an ad or analytics SDK adds tracking you did not decide on.
+
+**If blocked:** Reach a few people with the problem by hand, read the funnel one stage at a time, and change one thing at a time. Add no tracking or ads until the decision is recorded.
+
+[Apple reference](https://developer.apple.com/app-store/product-page/)
+
+## 14. Support and improve it
 
 **Aim:** Keep the app useful after launch.
 

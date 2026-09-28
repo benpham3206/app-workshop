@@ -12,7 +12,7 @@ Complete this for the actual app and supported regions. Treat unchecked items as
 - [ ] If selling subscriptions, compare the visible title, duration, price, trial conversion, Terms of Use, Privacy Policy, and restore path with the configured product and store metadata. [App Review Guidelines §3.1.2](https://developer.apple.com/app-store/review/guidelines/) (checked 2026-09-27).
 - [ ] Review every planned subscription price change: a decrease also lowers existing subscribers' renewal price and cannot preserve their higher price. [Subscription pricing](https://developer.apple.com/help/app-store-connect/manage-subscriptions/manage-pricing-for-auto-renewable-subscriptions/) (checked 2026-09-27).
 - [ ] Verify account deletion if the app creates accounts.
-- [ ] Prepare truthful metadata, screenshots, support and privacy URLs, and reviewer access.
+- [ ] Prepare truthful metadata, screenshots, support and privacy URLs, and reviewer access. Publish the pages from the drafts in `docs/legal/README.md`, add a Terms of Use link if selling subscriptions, and confirm each URL opens without login.
 - [ ] Determine encryption export requirements and any category-specific rules.
 - [ ] Test a final build with appropriate beta distribution before submission.
 - [ ] Archive for App Store submission with an eligible release or RC Xcode/SDK, not a beta build; beta builds may be eligible for internal and external TestFlight. Meet the current SDK floor. [App Store Connect release notes](https://developer.apple.com/help/app-store-connect/release-notes/), [submitting](https://developer.apple.com/app-store/submitting/) (checked 2026-09-27).
