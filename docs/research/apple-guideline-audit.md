@@ -37,6 +37,10 @@ The first pass covered design, privacy, and distribution. It did not cover how t
 
 Still deliberately open: CI choice, dependency policy, and passkeys or Sign in with Apple. Each depends on a product selecting accounts, packages, or a team setup.
 
+## Path to a first renewing subscriber (2026-09-27)
+
+Account, agreement, tax, banking, review, subscription, payment-route, legal, acquisition, and failure-mode research lives in [app-store-to-first-subscriber/](app-store-to-first-subscriber/REPORT.md). Start with `REPORT.md`; `08_factcheck.md` overrides the raw notes where they disagree.
+
 ## Conditional reviews for a future app
 
 Some areas depend entirely on the eventual product: children and age ratings, health or financial data, user-generated content and moderation, managed entitlements, CarPlay eligibility, and regional distribution terms. Evaluate the relevant sections of the [App Review Guidelines](https://developer.apple.com/app-store/review/guidelines/) and the capability-specific documentation when an app selects one of these areas. For example, a CarPlay app requires a category-specific entitlement that Apple reviews. [CarPlay entitlements](https://developer.apple.com/documentation/carplay/requesting-carplay-entitlements)
