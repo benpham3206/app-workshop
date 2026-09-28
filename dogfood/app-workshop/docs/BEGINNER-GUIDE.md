@@ -28,7 +28,7 @@ Do this:
 - Install and open a compatible Xcode release on a Mac.
 - Put the project under source control and record the Xcode and SDK versions.
 - Run a tiny starter app in Simulator; use a physical device when the feature depends on hardware.
-- If paid distribution is planned, enroll early; have the Account Holder accept the latest Paid Apps Agreement and complete tax and banking information before building the purchase flow. Apple source checked 2026-09-27: https://developer.apple.com/help/app-store-connect/manage-agreements/sign-and-update-agreements
+- If paid distribution is planned, start only the slow parts now: choose individual or organization seller, and for an organization request the free D-U-N-S number, which can take days. Build, run on your own device, and test purchases with a StoreKit configuration file before paying for the program. Apple source checked 2026-09-27: https://developer.apple.com/support/compare-memberships/
 - Before fixing the app name, clear the chosen name and marks in the intended storefront regions and decide whether the public seller will be an individual or legal organization. Apple seller-name source checked 2026-09-27: https://developer.apple.com/help/account/membership/program-enrollment/
 
 **Move on when:** A clean checkout that another person could open and run.
@@ -209,7 +209,7 @@ Do this:
 
 Do this:
 
-- Prepare signing and an App Store Connect record for TestFlight where applicable.
+- Enroll in the Apple Developer Program once the first slice works; have the Account Holder accept the latest Paid Apps Agreement and complete tax and banking before creating purchase products. Then prepare signing and an App Store Connect record for TestFlight where applicable. Apple source checked 2026-09-27: https://developer.apple.com/help/app-store-connect/manage-agreements/sign-and-update-agreements
 - Give testers a task, not a tour of the features.
 - Collect confusion, crashes, failed results, and repeated requests.
 

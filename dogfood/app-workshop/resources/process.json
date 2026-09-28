@@ -22,7 +22,7 @@
         },
         {
           "id": "workspace-04",
-          "text": "If paid distribution is planned, enroll early; have the Account Holder accept the latest Paid Apps Agreement and complete tax and banking information before building the purchase flow. Apple source checked 2026-09-27: https://developer.apple.com/help/app-store-connect/manage-agreements/sign-and-update-agreements"
+          "text": "If paid distribution is planned, start only the slow parts now: choose individual or organization seller, and for an organization request the free D-U-N-S number, which can take days. Build, run on your own device, and test purchases with a StoreKit configuration file before paying for the program. Apple source checked 2026-09-27: https://developer.apple.com/support/compare-memberships/"
         },
         {
           "id": "workspace-05",
@@ -256,7 +256,7 @@
       "actions": [
         {
           "id": "beta-01",
-          "text": "Prepare signing and an App Store Connect record for TestFlight where applicable."
+          "text": "Enroll in the Apple Developer Program once the first slice works; have the Account Holder accept the latest Paid Apps Agreement and complete tax and banking before creating purchase products. Then prepare signing and an App Store Connect record for TestFlight where applicable. Apple source checked 2026-09-27: https://developer.apple.com/help/app-store-connect/manage-agreements/sign-and-update-agreements"
         },
         {
           "id": "beta-02",
