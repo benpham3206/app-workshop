@@ -8,12 +8,13 @@ root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 repo="benpham3206/agent-engineering"
 ref="main"
 checkout="$(mktemp -d)/agent-engineering"   # the OS clears the temp folder
-backbone=(
-  WORKER_TASK.md ARCHITECT_TASK.md REVIEWER_TASK.md SECURITY_REVIEWER_TASK.md RESEARCH_TASK.md
-  scripts/backbone.list scripts/verify-repo.sh scripts/security-check.sh scripts/run-hook.sh
-)
-
 git -c advice.detachedHead=false clone -q --depth 1 --branch "$ref" "https://github.com/$repo.git" "$checkout"
+# The generic backbone files: every path in upstream backbone.list except the docs this repository writes itself.
+backbone=()
+while IFS= read -r path; do
+  case "$path" in ''|'#'*|GOAL.md|STATUS.md|ARCHITECTURE.md|AGENTS.md|SECURITY.md) continue ;; esac
+  backbone+=("$path")
+done < "$checkout/templates/core/scripts/backbone.list"
 for path in standards "${backbone[@]/#/templates/core/}"; do
   if [[ ! -e "$checkout/$path" ]]; then
     printf 'sync-agent-engineering: %s has no %s at %s\n' "$repo" "$path" "$ref" >&2

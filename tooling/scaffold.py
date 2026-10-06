@@ -17,7 +17,9 @@ CATALOG = json.loads((ROOT / "config" / "catalog.json").read_text(encoding="utf-
 TEMPLATES = ROOT / "templates" / "generated-app"
 STARTERS = ROOT / "templates" / "starters"
 MANIFEST = ".apple-scaffold.json"
-ROLE_PACKETS = ("WORKER_TASK.md", "ARCHITECT_TASK.md", "REVIEWER_TASK.md", "SECURITY_REVIEWER_TASK.md", "RESEARCH_TASK.md")
+ROLE_PACKETS = tuple(  # agent-engineering's role packets, as listed in its synced backbone.list
+    line for line in (ROOT / "scripts" / "backbone.list").read_text(encoding="utf-8").split() if line.endswith("_TASK.md")
+)
 # ADOPT keeps these when the project already has them; the project owns them afterwards.
 KEEP_IF_PRESENT = ("README.md", "Makefile", ".gitignore")
 MERGED = "AGENTS.md"
