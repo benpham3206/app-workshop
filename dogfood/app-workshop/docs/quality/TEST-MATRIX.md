@@ -18,6 +18,7 @@ Record the oldest supported class, a common current class, and any materially di
 | --- | --- | --- | --- | --- |
 | Core job | First useful result from a fresh install | Primary device | | Pending |
 | Native experience | Complete job across sizes, appearances, states, and input methods | Each selected platform | | Pending |
+
 | Recovery | Offline, interrupted, denied permission, or failed request | Primary device | | Pending |
 | Data | Restart, migration, export/deletion, and sync conflict if used | Two devices if sync | | Pending |
 | Accessibility | VoiceOver, large text, contrast, Reduce Motion | Each selected platform | | Pending |

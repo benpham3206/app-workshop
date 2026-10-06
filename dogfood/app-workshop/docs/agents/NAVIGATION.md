@@ -27,8 +27,9 @@ Only these selected profiles and contracts are present. If an agent needs anothe
 | Liquid Glass or speed on supported devices | `docs/quality/GLASS-AND-PERFORMANCE.md` | `docs/design/COMPONENTS.md`, selected platform profiles, `docs/quality/TEST-MATRIX.md`, actual device captures |
 | App code or stored data | `docs/engineering/ARCHITECTURE.md`, `docs/engineering/SECURE-FAST-DEFAULTS.md`, `docs/engineering/PROJECT-SETUP.md`, `App/` if it exists | module contracts, privacy plan, test matrix, troubleshooting |
 | A system surface or permission | selected `platforms/` and `modules/` paths above | `docs/privacy/PLAN.md`, `docs/TROUBLESHOOTING.md`, release checklist |
+| Who may do what, or a review | `docs/agents/TASK-PACKET.md` (roles, allowed capabilities) | `AGENTS.md` operating loop, `.github/pull_request_template.md` |
 | A build or behavior failure | `docs/TROUBLESHOOTING.md`, `docs/quality/TEST-MATRIX.md` | code or contract that owns the failing behavior |
-| Shipping, support, or claims | `docs/release/`, `docs/privacy/PLAN.md`, `docs/operations/SUPPORT.md` | product brief, actual build/device evidence, current Apple rules |
+| Shipping, support, or claims | `docs/release/`, `docs/privacy/PLAN.md`, `docs/legal/`, `docs/operations/SUPPORT.md` | product brief, actual build/device evidence, current Apple rules |
 | An OS, SDK, or device change | `docs/compatibility/REVIEW.md`, selected platform profiles | `docs/design/NATIVE-REVIEW.md`, test matrix, release checklist |
 
 Use `rg --files docs design platforms` to locate the core files; add `modules` and `App` to a search only when those directories exist. Use `rg -n 'term' docs design platforms` to trace references, adding the same optional directories as needed. Do not copy the factory's `config/` or `tooling/` paths into this app: those live upstream in the boilerplate.
@@ -42,7 +43,7 @@ Use `rg --files docs design platforms` to locate the core files; add `modules` a
 | Engineering | `App/`, `docs/engineering/` | An interface, persistence rule, module contract, or entitlement changes. |
 | Platform surfaces | `platforms/`, `modules/` | The selection, availability, privacy, or extension behavior changes. |
 | Quality | `docs/quality/`, `docs/TROUBLESHOOTING.md`, tests when present | A failure needs a fix in its owning lane. |
-| Release and support | `docs/release/`, `docs/privacy/`, `docs/operations/SUPPORT.md` | An external claim or support flow needs product or engineering evidence. |
+| Release and support | `docs/release/`, `docs/privacy/`, `docs/legal/`, `docs/operations/SUPPORT.md` | An external claim or support flow needs product or engineering evidence. |
 
 The task packet's `May edit` field narrows these defaults. Read across lanes as needed; describe a needed cross-lane edit before making it when another agent owns the file. Avoid two agents editing the same source concurrently. Keep app-specific changes here and reusable factory improvements upstream.
 
