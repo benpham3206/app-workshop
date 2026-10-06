@@ -10,6 +10,7 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  actions: write
 
 concurrency:
   group: sync-agent-engineering
@@ -50,6 +51,8 @@ jobs:
           git add -A
           git commit -q -m "Sync agent-engineering standards" -m "$(cat vendor/agent-engineering.lock)"
           git push -q --force origin "$BRANCH"
+          # Pushes and PRs made with the workflow token start no workflows; dispatch CI so the required checks report.
+          gh workflow run ci.yml --ref "$BRANCH" -f xcode=false
           if [[ -z "$(gh pr list --head "$BRANCH" --state open --json number --jq '.[].number')" ]]; then
             gh pr create --head "$BRANCH" --base main \
               --title "Sync agent-engineering standards" \
