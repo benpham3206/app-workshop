@@ -2,6 +2,8 @@
 
 This repository was generated as a planning scaffold. Follow the user's current request and keep product assumptions explicit.
 
+Engineering policy (how to plan, build, verify, and debug): <https://github.com/benpham3206/agent-engineering/blob/main/standards/engineering.md>. Rules in this file win where they are more specific.
+
 Read `PRINCIPLES.md`, `docs/quality/GLASS-AND-PERFORMANCE.md`, `docs/design/NATIVE-REVIEW.md`, `docs/agents/NAVIGATION.md`, `docs/product/BRIEF.md`, `docs/design/IDENTITY.md`, `docs/ux/FLOWS.md`, `docs/ux/interactions/README.md`, applicable `docs/ux/patterns/`, and the selected platform and module profiles before implementation. Confirm current Apple API availability, Human Interface Guidelines, privacy requirements, and App Review rules for each feature. Use `docs/TROUBLESHOOTING.md` to plan likely failure checks and update it with confirmed product issues.
 
 Use native behavior for each supported platform. On supported OS versions, rely on system Liquid Glass for navigation and controls; keep content legible and add custom glass only when it helps a real control. Set an OS fallback. Treat responsive interaction, memory, and energy on representative hardware for each selected device class as release priorities. Preserve accessibility, localization, privacy, and recovery behavior as the product takes shape. Add dependencies, entitlements, targets, and backend services only for selected capabilities. Record evidence from actual builds and device tests; do not claim checks that were not run.
