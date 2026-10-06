@@ -300,6 +300,15 @@ class ScaffoldContracts(unittest.TestCase):
             result = subprocess.run(["make", "test"], cwd=output, capture_output=True, text=True)
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 
+    def test_dogfood_matches_the_factory(self):
+        # The dogfood app is a committed factory output. Files it owns are listed as "unmanaged" in its manifest.
+        result = invoke("update", "--project", ROOT / "dogfood" / "app-workshop")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("Would apply 0 change(s); 0 conflict(s)", result.stdout,
+                      "dogfood drifted from the factory: run make update PROJECT=dogfood/app-workshop APPLY=1, "
+                      "or add a file the app owns to unmanaged in its .apple-scaffold.json\n" + result.stdout)
+        self.assertNotRegex(result.stdout, r"(?m)^retired")
+
     def test_update_replaces_only_unedited_files(self):
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory) / "generated"

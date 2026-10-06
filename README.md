@@ -68,7 +68,7 @@ These can block a first app, so plan for them:
 | `modules/` | Optional capability contracts. |
 | `templates/`, `tooling/` | Generated files and the generator, checker, and planners. |
 | `docs/` | Process, research, compatibility, and agent guides. |
-| `dogfood/` | App Workshop's own Mac app, built with the factory. |
+| `dogfood/` | App Workshop's own Mac app, built with the factory. `make verify` fails when it falls behind the factory; files the app owns are listed under `unmanaged` in its `.apple-scaffold.json`. |
 | `tests/` | Generator contract tests (`make verify`). |
 
 Adapted from [agent-engineering](https://github.com/benpham3206/agent-engineering) for Apple apps.

@@ -7,6 +7,7 @@ Generated for **App Workshop**. These are hypotheses to investigate, not diagnos
 1. Reproduce the symptom and record OS, device, build, account, and network state.
 2. Follow the checks for the matching symptom; preserve the exact error or log.
 3. Add the confirmed cause, fix, and regression check to the project issue or support note.
+4. If the cause is in Apple's code, reduce it to a sample project, file it in [Feedback Assistant](https://developer.apple.com/bug-reporting/), and record the FB number beside the workaround.
 
 ## Build fails or an API is unavailable
 
@@ -79,3 +80,27 @@ First checks:
 - Profile the failing path with Xcode and Instruments; inspect broad view updates, main-thread work, images, and custom effects before changing the device support promise.
 
 Apple reference: https://developer.apple.com/documentation/xcode/performance-and-metrics
+
+## App Store submission rejects a beta toolchain build
+
+**Symptom:** A build used in TestFlight cannot be submitted to the App Store.
+
+First checks:
+
+- Record the exact Xcode and SDK build used for the archive.
+- Check the current App Store Connect release notes for App Store eligible release or RC builds and current SDK minimums.
+- Use the allowed internal or external TestFlight path for beta builds while producing a separate eligible App Store archive.
+
+Apple reference: https://developer.apple.com/help/app-store-connect/release-notes/
+
+## App disappears from EU storefronts
+
+**Symptom:** An intended EU listing is unavailable despite an approved app.
+
+First checks:
+
+- Check the app's EU territory availability in App Store Connect.
+- Confirm the developer's DSA trader status was submitted and verified.
+- Resolve an unverified trader status before investigating a binary or search-index issue.
+
+Apple reference: https://developer.apple.com/news/?id=einwn76m

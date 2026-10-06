@@ -7,3 +7,5 @@ check:
 
 icon-plan:
 	$(PYTHON) tools/icon_plan.py --brief design/icon-brief.json --output docs/design/ICON-PLAN.md
+
+-include starter.mk

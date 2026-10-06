@@ -27,7 +27,7 @@ This is the learning and delivery path for a future product. The boilerplate can
 
 ## What still needs a real app
 
-The scaffold has no Xcode project, SwiftUI screen, data model, icon artwork, signing identity, backend, App Store Connect record, or product-specific test plan. Those would be guesses before the product and target device are chosen. The first implementation milestone should be a single native app target and one complete task, followed by optional extensions.
+Without `--starter ios`, the scaffold has no Xcode project. The starter gives one target, one task owner, and state tests; it has no product screen, data model, icon artwork, signing identity, backend, App Store Connect record, or product-specific test plan. Those would be guesses before the product and target device are chosen. The first implementation milestone should be a single native app target and one complete task, followed by optional extensions.
 
 ## Controls and boundaries
 

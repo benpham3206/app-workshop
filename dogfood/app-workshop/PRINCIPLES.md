@@ -20,11 +20,74 @@ Great and outstanding are release expectations. Exceptional is how we work towar
 3. **Preserve the platform contract.** Use native behavior first. If changing a familiar control or gesture, write down the gained value and test every input and accessibility path it replaces.
 4. **Make state and ownership explicit.** Know which component owns data, what persists, what syncs, what can be deleted, and what happens when two devices disagree.
 5. **Keep changes small and inspectable.** Prefer one complete vertical slice over many partial features. Give shared code an owner and a clear boundary; do not extract it just because it might be reused.
-6. **Use evidence proportional to risk.** Test rules that can break, preview states that can look wrong, and use physical devices for hardware-dependent behavior. Report exactly what was checked.
+6. **Use evidence proportional to risk.** Climb the verification ladder below only as far as the property needs. Report exactly what was checked.
 7. **Design for repair.** Errors should preserve work, explain the next action, and leave enough diagnostic evidence to reproduce the problem without exposing private data.
 8. **Account for future cost.** Every entitlement, backend, dependency, notification, and platform target adds support and update work. Make its benefit visible before accepting that cost.
 9. **Tell the truth.** Copy, paywalls, privacy claims, progress, and release notes must match actual behavior. Do not label a prompt, mockup, generated file, simulator run, or unchecked build as shipped quality.
 10. **Revisit assumptions.** Apple APIs, devices, rules, and user needs change. Keep a short decision record with the condition that would make us change course.
+
+## Change discipline
+
+Use this order before you add code, a file, a target, a dependency, or a process step:
+
+1. **Question** the requirement and its success condition.
+2. **Delete** what the user job does not need.
+3. **Simplify.** Use existing project code first, then the Swift standard library, then an Apple framework, then a dependency the app already has, then the smallest direct code. Add an abstraction only when the boundary or the repetition is real.
+4. **Accelerate** the feedback loop when it is the bottleneck: previews, Simulator launch, focused tests.
+5. **Automate** only stable work that survived the steps above.
+
+Split code on reasons to change, not on size. A long cohesive file is better than fragments that share state. Use tripwires for review, not targets: a Swift file that grows past about 1,000 lines, a special case added to an unrelated flow, a pass-through wrapper, or an update that can leave state half-applied needs a stated reason or a simpler structure. Keep logic in the layer that owns it.
+
+Judge work by verified outcomes, not activity. Lines, files, tests, tool calls, and generated documents are not progress by themselves. Deletion is progress when it leaves the app closer to its goal. Never simplify away validation, access control, accessibility, or protection against data loss.
+
+## Verification ladder
+
+Stop at the first level that proves the property:
+
+1. Inspection and reasoning.
+2. The compiler: types and Swift 6 data-race checking.
+3. A direct run in a preview or in Simulator.
+4. A unit test of a state rule (Swift Testing).
+5. A regression test for a demonstrated defect.
+6. A UI test of a critical journey.
+7. A physical device, for hardware, performance, energy, and real permissions.
+8. TestFlight testers.
+9. Shipped-build signals: the Xcode Organizer, MetricKit, and crash reports.
+
+A higher level is not more rigorous when a lower one already proves the property. Tests are maintained code; each one must earn its cost. For non-trivial state transitions, parsing, money, or security logic, leave one small runnable check when the compiler cannot catch the break. A Simulator result is never device evidence.
+
+## Learn from defects
+
+For each confirmed defect:
+
+1. Reproduce it and record the device, OS, and build.
+2. Find the root cause. Fix the cause, not the symptom.
+3. Add the cheapest durable defense against recurrence: a type, a validation, a constraint, a test, or a permission boundary.
+4. Ask whether the defect reveals a broader invariant, and encode it where it applies.
+5. When the lesson applies to every app, change the factory. `make update` then carries it to existing apps.
+
+A fix repairs one instance. A guardrail makes the class of failure hard to reintroduce.
+
+A capability matures through these levels: **absent**, **works**, **reliable**, **observable**, **efficient**, **resilient**. The goal and the risk set the level each capability needs; not every capability needs the last one. Record the current and required level in `docs/operations/WORKBOARD.md`.
+
+## Apple engineering method
+
+A strong Apple engineer is not ten times faster at typing. They remove waiting and rework: they decide on running software, let tools catch mistakes early, and never ship a claim they cannot show. Each practice below points to the place where this factory makes it required, not just encouraged.
+
+| Practice | What it means here | Where it is enforced |
+| --- | --- | --- |
+| **Demo, then decide.** | Judge a flow, control, or animation on a running build. A document or mockup starts a discussion; it does not settle one. | `generate --starter ios` and `make run`; the `simulator-launch` gate comes before identity and polish work. |
+| **One owner per decision.** | Every gate and every shared file has one directly responsible owner. Parallel agents never share a write scope. | `docs/agents/TASK-PACKET.md`. |
+| **Say no first.** | A module, target, entitlement, SDK, or backend is rejected until a named user job needs it. | Capability contract in `AGENTS.md`. |
+| **The compiler reviews first.** | Build in the Swift 6 language mode with complete data-race checking from the first commit. Adopting it later means a migration; adopting it at the start costs nothing. | Starter build settings. |
+| **Tests pin behavior, measurements pin speed.** | Swift Testing covers state rules. XCTest metrics such as `XCTApplicationLaunchMetric` and Instruments compare a journey against a recorded baseline. | Starter `AppTests/`, `docs/quality/TEST-MATRIX.md`. |
+| **Logs are part of the product.** | Use `Logger` with a subsystem, a category, and privacy on interpolated values; never `print`. Use signposts for slow intervals, and MetricKit and the Xcode Organizer for shipped builds. | Starter `FirstTask.swift`, `SECURE-FAST-DEFAULTS.md`. |
+| **Every release is one-way.** | The App Store cannot roll back a binary; a phased release can only pause. During a rollout, old and new versions read the same data, so version stored data from the first release. | `docs/release/CHECKLIST.md`. |
+| **Work to the platform calendar.** | Test betas from June, ship for the September release, and meet the SDK minimum that App Store Connect enforces each spring. | `docs/compatibility/REVIEW.md`, release checklist. |
+| **Send bugs upstream.** | Reduce an Apple defect to a small sample project, file it in Feedback Assistant, and put the FB number beside the workaround so it can be removed later. | `docs/TROUBLESHOOTING.md`. |
+| **Evidence states its limits.** | A gate is done only when it cites files that exist. A Simulator result never stands in for a device result. | `docs/quality/gates.json` and `make check`. |
+
+The cultural practices come from published insider accounts, not Apple documentation: Ken Kocienda, *Creative Selection* (2018), on demo-driven decisions, and Adam Lashinsky, *Inside Apple* (2012), on directly responsible individuals. The technical practices cite Apple sources in `docs/research/apple-guideline-audit.md`.
 
 ## Two release priorities
 
