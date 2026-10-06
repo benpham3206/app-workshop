@@ -70,6 +70,6 @@ These can block a first app, so plan for them:
 | `docs/` | Process, research, compatibility, and agent guides. |
 | `dogfood/` | App Workshop's own Mac app, built with the factory. `make verify` fails when it falls behind the factory; files the app owns are listed under `unmanaged` in its `.apple-scaffold.json`. |
 | `tests/` | Generator contract tests (`make verify`). |
-| `vendor/` | agent-engineering's language-neutral standards, pinned in `vendor/agent-engineering.lock`. `tooling/sync-agent-engineering.sh` refreshes them; a daily workflow opens the PR. |
+| `vendor/`, `*_TASK.md`, `scripts/` | Copied from agent-engineering, the language-neutral layer above this factory: its standards, role packets, and repository checks. Pinned in `vendor/agent-engineering.lock`; `tooling/sync-agent-engineering.sh` refreshes them and a daily workflow opens the PR. Change them upstream. |
 
 Adapted from [agent-engineering](https://github.com/benpham3206/agent-engineering) for Apple apps.

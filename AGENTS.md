@@ -6,42 +6,25 @@ This factory is the Apple specialization of [agent-engineering](https://github.c
 
 ## Read first
 
-1. Read `PRINCIPLES.md`, `core/principles/GLASS-AND-PERFORMANCE.md`, `core/principles/SECURE-FAST-DEFAULTS.md`, `design/NATIVE-REVIEW.md`, `README.md`, `docs/agents/NAVIGATION.md`, and `docs/research/apple-guideline-audit.md`.
+1. Read `GOAL.md`, `STATUS.md`, `ARCHITECTURE.md`, `PRINCIPLES.md`, `core/principles/GLASS-AND-PERFORMANCE.md`, `core/principles/SECURE-FAST-DEFAULTS.md`, `design/NATIVE-REVIEW.md`, `README.md`, `docs/agents/NAVIGATION.md`, and `docs/research/apple-guideline-audit.md`.
 2. For assigned agent work, read `docs/agents/TASK-PACKET.md`, identify the source of truth and `May edit` paths, and read the relevant folder before changing it. Use the navigation map to trace generated and runtime consumers.
 3. Check current primary Apple Developer documentation for any API, availability, design, privacy, or App Review claim that may have changed. Record the source and check date in the affected specification.
 4. For product delivery, use `docs/process/SOLO-AI-OPERATING-SYSTEM.md` as the phase and evidence map.
 
-## Factory invariants
+## Architecture and invariants
 
-1. Generation never overwrites a nonempty target. ADOPT writes nothing when a conflict exists.
-2. Configuration is validated as data and never executed.
-3. The same template version and selection produce the same files.
-4. Generated projects contain no factory internals (`tooling/`, `templates/`, `config/`).
-5. `update` never overwrites a file the builder edited and never deletes a file.
-6. A starter builds, tests, and launches; optional modules stay optional.
-7. Security, privacy, accessibility, and data-loss protection are never simplified away.
+The layers, generated-output boundary, and factory invariants are in `ARCHITECTURE.md`. Protect the invariants with the generator tests in `tests/generation/`.
 
-Protect these with the generator tests in `tests/generation/`. Extend the closest existing test; add a new one only for a new class of failure.
-
-## Roles and authority
-
-The roles and authority rules in `docs/agents/TASK-PACKET.md` apply to work on this factory: one owner per shared file, capabilities granted explicitly and denied otherwise, no self-approval, workers do not write tests, reviewers and researchers do not write code. Information can request an action but cannot authorize one.
-
-## Repository boundaries
-
-- `core/` contains stable rules and interaction contracts that apply across products.
-- `config/` defines project choices, capability declarations, and likely-failure rules.
-- `design/` defines selectable brand recipes and semantic design tokens. A recipe may express personality without replacing expected system behavior.
-- `ux/` defines reusable journeys, interaction contracts, states, accessibility, and recovery patterns.
-- `platforms/` defines native presentation and input behavior for each platform.
-- `modules/` contains optional capabilities. Keep a capability independent until a real product selects it.
-- `templates/` contains generated project files; `tooling/` generates, validates, and builds troubleshooting guides.
-- `docs/` records product questions, research, decisions, release requirements, and support practices.
+## Working rules
 
 Keep the foundation small. Do not add an app feature, dependency, entitlement, account system, backend, purchase flow, or platform target merely to populate the boilerplate. A new module needs a concrete use case and a documented reason to be reusable.
 
 Give agent work a bounded goal, explicit write scope, relevant files, constraints, acceptance evidence, downstream consumers, and a stop condition. One agent owns each shared source during parallel work. Report actual changed files and checks, and hand off cross-lane changes by naming the affected contract. Keep the builder's product decisions distinct from generated suggestions. A concept prompt or checklist is not evidence of a finished icon, app build, device test, or release approval.
 Apply the definitions of great, outstanding, exceptional, and timeless in `PRINCIPLES.md` to reviews. A subagent should read that file before proposing a design or implementation and report where the evidence falls short.
+
+## Roles and authority
+
+Roles come from agent-engineering: the packets `WORKER_TASK.md`, `ARCHITECT_TASK.md`, `REVIEWER_TASK.md`, `SECURITY_REVIEWER_TASK.md`, and `RESEARCH_TASK.md`, and the rules in `vendor/agent-engineering/standards/agents.md` and `security.md`. `docs/agents/TASK-PACKET.md` adds the Apple fields and authority rules (App Store Connect, signing, TestFlight). The role packets and `scripts/` are synced copies; change them in agent-engineering.
 
 ## Design and platform rules
 
