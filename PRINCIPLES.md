@@ -87,7 +87,7 @@ A strong Apple engineer is not ten times faster at typing. They remove waiting a
 | **Send bugs upstream.** | Reduce an Apple defect to a small sample project, file it in Feedback Assistant, and put the FB number beside the workaround so it can be removed later. | `docs/TROUBLESHOOTING.md`. |
 | **Evidence states its limits.** | A gate is done only when it cites files that exist. A Simulator result never stands in for a device result. | `docs/quality/gates.json` and `make check`. |
 
-The cultural practices come from published insider accounts, not Apple documentation: Ken Kocienda, *Creative Selection* (2018), on demo-driven decisions, and Adam Lashinsky, *Inside Apple* (2012), on directly responsible individuals. The technical practices cite Apple sources in `docs/research/apple-guideline-audit.md`.
+The cultural practices come from published insider accounts, not Apple documentation: Ken Kocienda, *Creative Selection* (2018), on demo-driven decisions, and Adam Lashinsky, *Inside Apple* (2012), on directly responsible individuals. The technical practices cite Apple sources in the factory's [Apple guideline audit](https://github.com/benpham3206/app-workshop/blob/main/docs/research/apple-guideline-audit.md).
 
 ## Two release priorities
 
