@@ -2,6 +2,8 @@
 
 These instructions govern work in this product-neutral Apple ecosystem boilerplate. Follow the user's current request when it sets a narrower scope. Do not infer a product, target audience, price, or supported device from the folder names.
 
+This factory is the Apple specialization of [agent-engineering](https://github.com/benpham3206/agent-engineering). Language-neutral engineering policy (how to plan, build, verify, and debug): <https://github.com/benpham3206/agent-engineering/blob/main/standards/engineering.md>. Rules in this file and its linked documents win where they are more specific.
+
 ## Read first
 
 1. Read `PRINCIPLES.md`, `core/principles/GLASS-AND-PERFORMANCE.md`, `core/principles/SECURE-FAST-DEFAULTS.md`, `design/NATIVE-REVIEW.md`, `README.md`, `docs/agents/NAVIGATION.md`, and `docs/research/apple-guideline-audit.md`.
