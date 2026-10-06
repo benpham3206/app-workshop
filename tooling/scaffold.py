@@ -17,6 +17,7 @@ CATALOG = json.loads((ROOT / "config" / "catalog.json").read_text(encoding="utf-
 TEMPLATES = ROOT / "templates" / "generated-app"
 STARTERS = ROOT / "templates" / "starters"
 MANIFEST = ".apple-scaffold.json"
+ROLE_PACKETS = ("WORKER_TASK.md", "ARCHITECT_TASK.md", "REVIEWER_TASK.md", "SECURITY_REVIEWER_TASK.md", "RESEARCH_TASK.md")
 # ADOPT keeps these when the project already has them; the project owns them afterwards.
 KEEP_IF_PRESENT = ("README.md", "Makefile", ".gitignore")
 MERGED = "AGENTS.md"
@@ -170,6 +171,9 @@ def _build(config, starter, temporary):
         temporary / "docs" / "agents" / "TASK-PACKET.md",
         tokens,
     )
+    # Role packets synced from agent-engineering (tooling/sync-agent-engineering.sh); TASK-PACKET.md points to them.
+    for packet in ROLE_PACKETS:
+        shutil.copyfile(ROOT / packet, temporary / packet)
     _write_from_template(
         ROOT / "docs" / "compatibility" / "REVIEW.md",
         temporary / "docs" / "compatibility" / "REVIEW.md",

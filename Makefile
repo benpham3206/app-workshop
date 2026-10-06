@@ -32,6 +32,7 @@ process-guide:
 
 verify:
 	$(PYTHON) -m unittest discover -s tests/generation -v
+	bash scripts/verify-repo.sh
 
 verify-xcode:
 	APP_WORKSHOP_XCODE=1 $(PYTHON) -m unittest discover -s tests/generation -v

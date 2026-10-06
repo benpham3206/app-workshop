@@ -67,6 +67,9 @@ class ScaffoldContracts(unittest.TestCase):
                 if not destination.startswith("http"):
                     self.assertTrue((output / "docs" / "agents" / destination).resolve().is_file(), destination)
             self.assertIn("May edit", (output / "docs" / "agents" / "TASK-PACKET.md").read_text())
+            # TASK-PACKET.md points to these agent-engineering role packets, so every generated app has them.
+            for packet in ("WORKER_TASK.md", "ARCHITECT_TASK.md", "REVIEWER_TASK.md", "SECURITY_REVIEWER_TASK.md", "RESEARCH_TASK.md"):
+                self.assertEqual((output / packet).read_bytes(), (ROOT / packet).read_bytes(), packet)
             self.assertTrue((output / "docs" / "product" / "BRIEF.md").is_file())
             self.assertTrue((output / "docs" / "START-TO-SHIP.md").is_file())
             self.assertTrue((output / "docs" / "BEGINNER-GUIDE.md").is_file())

@@ -1,0 +1,6 @@
+TEMPLATE=agent-engineering
+TEMPLATE_VERSION=synced
+TEMPLATE_REVISION=see vendor/agent-engineering.lock
+PROJECT_NAME=app-workshop
+ADDONS=
+TEMPLATE_PATHS=templates/*
