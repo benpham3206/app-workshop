@@ -28,10 +28,11 @@ jobs:
       - name: Sync from upstream
         run: bash tooling/sync-agent-engineering.sh
 
+      # The lock pins upstream HEAD, so it changes on every upstream commit; only copied files count.
       - name: Stop when nothing changed
         id: diff
         run: |
-          if [[ -z "$(git status --porcelain)" ]]; then
+          if [[ -z "$(git status --porcelain -- . ':(exclude)vendor/agent-engineering.lock')" ]]; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
           else
             echo "changed=true" >> "$GITHUB_OUTPUT"
