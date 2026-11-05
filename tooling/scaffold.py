@@ -311,6 +311,7 @@ def update(project, apply=False):
 
     A file the builder never edited (its hash still matches the manifest) is safe to replace.
     A file the builder edited is a conflict: it is reported with a diff and never overwritten.
+    A generated path outside the project is a conflict and is never read or copied.
     Files the factory no longer produces are reported, never deleted.
     """
     project = project.resolve()
