@@ -77,7 +77,7 @@ A strong Apple engineer is not ten times faster at typing. They remove waiting a
 | Practice | What it means here | Where it is enforced |
 | --- | --- | --- |
 | **Demo, then decide.** | Judge a flow, control, or animation on a running build. A document or mockup starts a discussion; it does not settle one. | `generate --starter ios` and `make run`; the `simulator-launch` gate comes before identity and polish work. |
-| **One owner per decision.** | Every gate and every shared file has one directly responsible owner. Parallel agents never share a write scope. | `docs/agents/TASK-PACKET.md`. |
+| **One owner per decision.** | Every gate and every shared file has one directly responsible owner. Parallel agents never share a write scope. | One bounded assignment with explicit write scope and coordination rules in `AGENTS.md`. |
 | **Say no first.** | A module, target, entitlement, SDK, or backend is rejected until a named user job needs it. | Capability contract in `AGENTS.md`. |
 | **The compiler reviews first.** | Build in the Swift 6 language mode with complete data-race checking from the first commit. Adopting it later means a migration; adopting it at the start costs nothing. | Starter build settings. |
 | **Tests pin behavior, measurements pin speed.** | Swift Testing covers state rules. XCTest metrics such as `XCTApplicationLaunchMetric` and Instruments compare a journey against a recorded baseline. | Starter `AppTests/`, `docs/quality/TEST-MATRIX.md`. |

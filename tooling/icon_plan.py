@@ -32,7 +32,7 @@ def load_brief(path):
     if not isinstance(brief["identity"], str) or brief["identity"] not in {"playful-kinetic", "calm-precise", "dark-technical"}:
         raise IconBriefError("Unknown identity")
     if not isinstance(brief["platforms"], list) or not brief["platforms"] or any(
-        not isinstance(item, str) or item not in {"ios", "ipados", "macos", "watchos", "tvos", "visionos"} for item in brief["platforms"]
+        not isinstance(item, str) or item not in {"ios", "ipados", "macos", "watchos", "visionos"} for item in brief["platforms"]
     ):
         raise IconBriefError("Select at least one supported platform")
     if not isinstance(brief["visual_motifs"], list) or not 1 <= len(brief["visual_motifs"]) <= 5 or any(
@@ -82,7 +82,7 @@ def build_plan(brief):
         "- [ ] Refine one concept into editable, properly licensed source layers or artwork.",
         "- [ ] Check the current Apple App icons HIG and the Xcode icon workflow for every selected platform.",
         "- [ ] For iOS, iPadOS, macOS, and watchOS, evaluate Icon Composer and its appearance variants.",
-        "- [ ] For tvOS or visionOS, review the platform's layered asset-catalog requirements.",
+        "- [ ] For visionOS, review the platform's layered asset-catalog requirements.",
         "- [ ] Preview the built icon in Simulator and on relevant hardware across supported appearances.",
         "- [ ] Save the chosen source, exports, review screenshots, and decision rationale in the app repository.",
         "",

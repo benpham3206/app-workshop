@@ -37,6 +37,7 @@ class ScaffoldContracts(unittest.TestCase):
     def test_catalog_choices_have_navigable_sources(self):
         catalog = json.loads((ROOT / "config" / "catalog.json").read_text())
         schema = json.loads((ROOT / "config" / "schema" / "project.schema.json").read_text())
+        self.assertEqual(catalog["platforms"], ["ios", "ipados", "macos", "watchos", "visionos"])
         for item in catalog["identities"]:
             self.assertTrue((ROOT / "design" / "identity" / item / "README.md").is_file(), item)
         for item in catalog["platforms"]:
@@ -55,21 +56,23 @@ class ScaffoldContracts(unittest.TestCase):
             self.assertTrue((output / "AGENTS.md").is_file())
             self.assertTrue((output / "PRINCIPLES.md").is_file())
             self.assertTrue((output / "docs" / "agents" / "NAVIGATION.md").is_file())
-            self.assertTrue((output / "docs" / "agents" / "TASK-PACKET.md").is_file())
             navigation = (output / "docs" / "agents" / "NAVIGATION.md").read_text()
             self.assertIn("platforms/ios/PROFILE.md", navigation)
             self.assertIn("platforms/watchos/PROFILE.md", navigation)
             self.assertIn("modules/active-activity/CONTRACT.md", navigation)
             self.assertIn("compatibility/IPHONE-DUO.md", navigation)
-            self.assertNotIn("platforms/tvos/PROFILE.md", navigation)
+            self.assertNotIn("platforms/" + "tvos/PROFILE.md", navigation)
             self.assertNotIn("{{", navigation)
             for destination in re.findall(r"\]\(([^)]+)\)", navigation):
                 if not destination.startswith("http"):
                     self.assertTrue((output / "docs" / "agents" / destination).resolve().is_file(), destination)
-            self.assertIn("May edit", (output / "docs" / "agents" / "TASK-PACKET.md").read_text())
-            # TASK-PACKET.md points to these agent-engineering role packets, so every generated app has them.
-            for packet in ("WORKER_TASK.md", "ARCHITECT_TASK.md", "REVIEWER_TASK.md", "SECURITY_REVIEWER_TASK.md", "RESEARCH_TASK.md"):
-                self.assertEqual((output / packet).read_bytes(), (ROOT / packet).read_bytes(), packet)
+            self.assertEqual(list(output.rglob("*_TASK.md")), [])
+            self.assertEqual(list(output.rglob("*PACKET.md")), [])
+            self.assertFalse((output / (".engineering" + "-manifest")).exists())
+            for path in output.rglob("*"):
+                if path.is_file():
+                    self.assertNotIn(b"agent-" + b"engineering", path.read_bytes(), path)
+            self.assertIn("https://github.com/benpham3206/principles", (output / "AGENTS.md").read_text())
             self.assertTrue((output / "docs" / "product" / "BRIEF.md").is_file())
             self.assertTrue((output / "docs" / "START-TO-SHIP.md").is_file())
             self.assertTrue((output / "docs" / "BEGINNER-GUIDE.md").is_file())
@@ -83,7 +86,10 @@ class ScaffoldContracts(unittest.TestCase):
             self.assertIn("Representative physical devices", (output / "docs" / "quality" / "TEST-MATRIX.md").read_text())
             self.assertTrue((output / "docs" / "quality" / "AUTOMATION.md").is_file())
             self.assertTrue((output / "docs" / "engineering" / "ECOSYSTEM.md").is_file())
-            self.assertTrue((output / "docs" / "release" / "STORE-PAGE.md").is_file())
+            self.assertTrue((output / "docs" / "release" / "CHECKLIST.md").is_file())
+            self.assertFalse((output / "docs" / "release" / "STORE-PAGE.md").exists())
+            self.assertFalse((output / "docs" / "operations" / "MEASUREMENT.md").exists())
+            self.assertFalse((output / "docs" / "legal").exists())
             self.assertTrue((output / "platforms" / "ios" / "PROFILE.md").is_file())
             self.assertTrue((output / "platforms" / "watchos" / "PROFILE.md").is_file())
             self.assertTrue((output / "modules" / "active-activity" / "CONTRACT.md").is_file())
@@ -181,6 +187,12 @@ class ScaffoldContracts(unittest.TestCase):
             self.assertIn("Relationship", text)
             self.assertIn("Distinctive geometry", text)
             self.assertIn("not final app assets", text)
+            data["platforms"] = ["tvos"]
+            brief.write_text(json.dumps(data))
+            unsupported = subprocess.run(command, cwd=output, capture_output=True, text=True, check=False)
+            self.assertEqual(unsupported.returncode, 1)
+            self.assertIn("supported platform", unsupported.stderr)
+            data["platforms"] = ["ios"]
             data["identity"] = ["playful-kinetic"]
             brief.write_text(json.dumps(data))
             malformed = subprocess.run(command, cwd=output, capture_output=True, text=True, check=False)
@@ -225,7 +237,7 @@ class ScaffoldContracts(unittest.TestCase):
             {**base, "identity": ["playful-kinetic"]},
             {**base, "platforms": ["ios", "ios"]},
             {**base, "platforms": ["watchos"]},
-            {**base, "platforms": ["tvos"], "modules": ["widgets"]},
+            {**base, "platforms": ["tvos"], "modules": []},
             {**base, "unexpected": True},
             {**base, "project": {"name": "Neutral Preview", "slug": "../escape"}},
         )
@@ -302,15 +314,6 @@ class ScaffoldContracts(unittest.TestCase):
             self.assertEqual(invoke("generate", "--config", EXAMPLE, "--output", output, "--starter", "ios").returncode, 0)
             result = subprocess.run(["make", "test"], cwd=output, capture_output=True, text=True)
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
-
-    def test_dogfood_matches_the_factory(self):
-        # The dogfood app is a committed factory output. Files it owns are listed as "unmanaged" in its manifest.
-        result = invoke("update", "--project", ROOT / "dogfood" / "app-workshop")
-        self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertIn("Would apply 0 change(s); 0 conflict(s)", result.stdout,
-                      "dogfood drifted from the factory: run make update PROJECT=dogfood/app-workshop APPLY=1, "
-                      "or add a file the app owns to unmanaged in its .apple-scaffold.json\n" + result.stdout)
-        self.assertNotRegex(result.stdout, r"(?m)^retired")
 
     def test_update_replaces_only_unedited_files(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -420,6 +423,12 @@ class ScaffoldContracts(unittest.TestCase):
             self.assertTrue(agents.startswith("# Existing rules\nKeep this.\n"))
             self.assertIn("## App Workshop operating layer", agents)
             self.assertTrue((project / "docs" / "product" / "BRIEF.md").is_file())
+            self.assertEqual(list(project.rglob("*_TASK.md")), [])
+            self.assertEqual(list(project.rglob("*PACKET.md")), [])
+            self.assertFalse((project / (".engineering" + "-manifest")).exists())
+            for path in project.rglob("*"):
+                if path.is_file():
+                    self.assertNotIn(b"agent-" + b"engineering", path.read_bytes(), path)
             self.assertFalse((project / "App.xcodeproj").exists())
             manifest = json.loads((project / ".apple-scaffold.json").read_text())
             self.assertEqual(manifest["unmanaged"], ["AGENTS.md", "Makefile", "README.md"])

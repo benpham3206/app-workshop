@@ -27,4 +27,4 @@ Everything below is reference. Open it when a gate asks for it, not before.
 
 Run `make check` in this project to verify its generated structure and list its gates. Once the product promise and motifs are real, fill `design/icon-brief.json` and run `make icon-plan` here. These tools are included in the generated project. `make check` does not verify an app build or approve release.
 
-Read `AGENTS.md` and `docs/agents/NAVIGATION.md` before changing this project. Use `docs/agents/TASK-PACKET.md` to give any assigned agent a clear file scope and evidence target.
+Read `AGENTS.md` and `docs/agents/NAVIGATION.md` before changing this project. Give each assigned agent a clear goal, file scope, constraints, and evidence target.

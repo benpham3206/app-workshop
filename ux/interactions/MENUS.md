@@ -19,6 +19,6 @@ There are different kinds of “menu.” Choose the surface from the user's task
 - Use separators and submenus to group related actions; avoid deep nesting for a tiny command set.
 - A Mac menu bar is part of a normal Mac app. A `MenuBarExtra` is a separate status-item experience and should be optional, not a replacement for the app's commands.
 
-**Dogfood path:** execute each command from the visible control, menu bar, context menu, and shortcut where those surfaces exist. Verify all paths produce the same result and error behavior. Then test with multiple windows and changed focus.
+**App use check:** execute each command from the visible control, menu bar, context menu, and shortcut where those surfaces exist. Verify all paths produce the same result and error behavior. Then test with multiple windows and changed focus.
 
 Apple references: [Menus HIG](https://developer.apple.com/design/human-interface-guidelines/menus), [Menus and commands](https://developer.apple.com/documentation/swiftui/menus-and-commands), [Building and customizing the menu bar with SwiftUI](https://developer.apple.com/documentation/swiftui/building-and-customizing-the-menu-bar-with-swiftui). Reviewed 2026-09-25.

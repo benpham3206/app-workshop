@@ -2,14 +2,14 @@
 
 ## Objective
 
-Give a first-time Apple app builder a native, product-neutral scaffold and a step-by-step process from idea to App Store release, with the evidence each step needs.
+Give an Apple app builder a native, product-neutral scaffold, a runnable iOS starter, and verifiable build and release requirements.
 
 ## Success conditions
 
 - A selection generates a scaffold that passes its own `make check`. Evidence: `make verify`.
 - The iOS starter builds, tests, and launches in Simulator. Evidence: `make verify-xcode`.
-- An existing app receives factory changes without losing the builder's edits. Evidence: `make update`, and the dogfood check in `make verify`.
-- The factory follows agent-engineering's backbone. Evidence: `scripts/verify-repo.sh` in `make verify`.
+- An existing app receives factory changes without losing the builder's edits. Evidence: generation, adoption, and update checks in `make verify`.
+- Repository structure, unresolved template tokens, and tracked secret files are checked by locally owned scripts. Evidence: `make verify`.
 
 ## Constraints
 
@@ -17,4 +17,4 @@ Native Apple frameworks first. No backend, account, purchase, or dependency unti
 
 ## Non-goals
 
-Choosing a product, price, or audience for the builder. Language-neutral rules (agent-engineering owns those).
+Choosing a product, price, or audience for the builder. Selling, store publishing, hosted legal pages, and general engineering method. External homes are linked in `README.md`.

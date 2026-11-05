@@ -1,35 +1,25 @@
 # App Workshop
 
-A factory for Apple apps, built for one person working with AI agents. It takes you from an idea to a running app, through App Review, to a first renewing subscriber. It does not choose your product: you pick the job, platforms, and capabilities; it generates the plan, the starter app, the checklists, and the guardrails.
+A product-neutral factory for native Apple apps. Select the platforms, identity, and optional capabilities. Generate an app scaffold, add the iOS starter when needed, and carry later factory changes into existing apps without overwriting your edits.
 
-## The path
-
-| Stage | What you do | Where to start |
-| --- | --- | --- |
-| 1. Idea | Name the person, the repeated problem, the first useful result, and why they would return. | `docs/process/START-TO-SHIP.md` |
-| 2. Setup (week 1) | Enroll in the Apple Developer Program; have the Account Holder accept the Paid Apps Agreement and finish tax and banking. Clear the app name. These take days to weeks and block selling. | Generated `docs/BEGINNER-GUIDE.md`, research `REPORT.md` |
-| 3. Build | Generate a runnable app and build one complete task end to end. | `make generate … STARTER=ios` |
-| 4. Sell | Choose one-time or subscription value, then follow the commerce contract. | `modules/commerce/README.md` |
-| 5. Ship | Publish privacy, terms, and support pages; test with TestFlight; fill the store page; submit with a released (non-beta) Xcode. | Generated `docs/release/CHECKLIST.md`, `docs/legal/` |
-| 6. First customer | Build a waitlist, tune the listing, decide on ads, and watch the funnel to the first renewal. | Generated `docs/BEGINNER-GUIDE.md` (launch), `docs/operations/MEASUREMENT.md` |
-| 7. Operate | Fix crashes and confusion before adding features; review each new OS. | Generated `docs/TROUBLESHOOTING.md`, `docs/operations/WORKBOARD.md` |
-
-The research behind stages 2–6 (accounts, fees, payouts, App Review, StoreKit and RevenueCat, payment routes, legal and regional blockers, acquisition, failure modes) is in [`docs/research/app-store-to-first-subscriber/`](docs/research/app-store-to-first-subscriber/REPORT.md). It is dated; recheck Apple's rules before relying on it.
+This repository owns app construction and build verification. The [Principles skills](https://github.com/benpham3206/principles) supply the engineering method. Sales, publishing, and hosted legal templates live in the repositories linked below.
 
 ## Quick start
 
 ```sh
-make verify                                   # factory self-test
+make verify                                   # factory and repository checks
 make generate                                 # preview into dist/neutral-preview/
 make generate CONFIG=my-app.json OUTPUT=dist/my-app STARTER=ios
-cd dist/my-app && make run                    # build and launch in Simulator (needs Xcode)
+cd dist/my-app && make run                     # build and launch in Simulator
 make test                                     # Swift Testing state tests
-make check                                    # structure, release gates, and tracked-secret scan
+make check                                    # structure, evidence gates, and tracked-secret scan
 ```
 
-Start `my-app.json` by copying `examples/neutral-preview/project.json` and choosing an identity, platforms, and modules from `config/catalog.json`. Generation never overwrites a nonempty folder. Set `DEVELOPER_DIR` if Xcode is not the active developer directory.
+Copy `examples/neutral-preview/project.json` to start `my-app.json`. Choose an identity, platforms, and modules from `config/catalog.json`. Generation requires an empty destination. The supported platforms are iOS, iPadOS, macOS, watchOS, and visionOS. Only iOS and iPadOS have a runnable starter.
 
-Already have an app? Add the planning layer without touching app code, and pull later factory fixes:
+Xcode and an installed iOS Simulator runtime are required for `make run`, `make test`, and the factory's `make verify-xcode`. Set `DEVELOPER_DIR` when Xcode is not the active developer directory.
+
+To add the scaffold to an existing app and receive later changes, run these commands from the factory:
 
 ```sh
 make adopt CONFIG=my-app.json PROJECT=path/to/app
@@ -37,39 +27,47 @@ make update PROJECT=path/to/app               # report only
 make update PROJECT=path/to/app APPLY=1       # update files you never edited
 ```
 
-## What you get
+Adoption preserves app source and existing root instructions. It writes nothing when a generated path conflicts. Updates preserve edited files and report retired files without deleting them.
 
-- **A starter app** (`--starter ios`): Xcode project, Swift 6, one task owner with tests, `make run` and `make test`.
-- **Planning documents**: brief, flows, action contracts, identity and icon brief, privacy plan, architecture prompts.
-- **Capability contracts** for optional modules (commerce, accounts, sync, notifications, widgets, Live Activities, App Intents, and more), each with a native-first build-vs-buy table.
-- **Release gates**: checklist, store page, evidence-backed gates checked by `make check`, and a troubleshooting guide tailored to your selection.
-- **Guardrails**: a tracked-secret scan (file names and contents), no-rollback release rules, and an entitlement-failure policy for purchases.
+## What the factory supplies
+
+- An optional iOS starter with an Xcode project, Swift 6, one task owner with tests, and Simulator build and launch commands.
+- App specifications for the first useful result, flows, state, native interactions, identity, icons, privacy, and architecture.
+- Optional capability contracts for accounts, commerce, sync, notifications, widgets, Live Activities, App Intents, background work, and sharing.
+- Release requirements, evidence gates, and troubleshooting filtered to the selected platforms and modules. A passing structure check does not approve a release.
+- A tracked-secret scan, signing exclusions, privacy manifest, icon and entitlement requirements, and version checks for the starter.
+
+Purchase code, a macOS starter, upload automation, and store publishing are outside the current implementation.
+
+## External material
+
+| Material | Home |
+| --- | --- |
+| Account, payment, review, legal, and acquisition research | [Distribution research](https://github.com/benpham3206/distribution/tree/main/research/app-store-to-first-subscriber) |
+| Product and publishing platform research | [Productivity platform research](https://github.com/benpham3206/distribution/tree/main/research/productivity-platform) |
+| Store page and measurement templates | [App Store templates](https://github.com/benpham3206/distribution/tree/main/templates/app-store) |
+| Privacy policy, Terms of Use, and support page templates | [Legal templates](https://github.com/benpham3206/web-workshop/tree/main/templates/legal) |
+
+The research is dated. Recheck current Apple requirements before release.
 
 ## Working with agents
 
-Agents start at [`AGENTS.md`](AGENTS.md). Assign work with [`docs/agents/TASK-PACKET.md`](docs/agents/TASK-PACKET.md): a bounded goal, exact write scope, granted capabilities, and the evidence that proves it is done. [`docs/agents/NAVIGATION.md`](docs/agents/NAVIGATION.md) maps each topic to its source of truth. [`PRINCIPLES.md`](PRINCIPLES.md) defines the quality bar and the verification ladder. Signing, App Store Connect, pricing, and submission stay with the builder unless a packet grants one named action.
+Start at [AGENTS.md](AGENTS.md). [The navigation map](docs/agents/NAVIGATION.md) identifies the owning files. Give each assignment a bounded goal, exact write scope, granted capabilities, constraints, and acceptance evidence. Signing, account, pricing, and submission actions require the builder's explicit authorization.
 
-## Not included yet
-
-These can block a first app, so plan for them:
-
-- **Purchase code.** Commerce is a contract, not an implementation. The starter has no paywall or StoreKit code.
-- **A macOS starter.** Only iOS has a runnable starter. Mac apps that cannot pass Mac App Store review need Developer ID signing, notarization, and their own payment provider.
-- **Release automation.** Upload, screenshots, and review status are manual; the proposed agent tooling is in `07_agent_operable_pipeline.md`.
+[The Apple quality guide](PRINCIPLES.md) is locally authored and records app-specific review and release expectations. It is separate from the external Principles skills.
 
 ## Repository map
 
 | Directory | Contents |
 | --- | --- |
-| `core/` | Principles shared by every app (performance, Liquid Glass, secure defaults). |
-| `config/` | Selection catalog, schema, beginner journey, troubleshooting rules. |
-| `design/`, `ux/` | Identity recipes, icon process, interaction contracts, onboarding and permission patterns. |
-| `platforms/` | Native behavior for each Apple platform. |
+| `core/` | Shared Apple app performance, Liquid Glass, and security requirements. |
+| `config/` | Selection catalog, schema, process, and troubleshooting rules. |
+| `design/`, `ux/` | Identity recipes, icon process, native interactions, and recovery patterns. |
+| `platforms/` | Profiles for the five supported Apple platforms. |
 | `modules/` | Optional capability contracts. |
-| `templates/`, `tooling/` | Generated files and the generator, checker, and planners. |
-| `docs/` | Process, research, compatibility, and agent guides. |
-| `dogfood/` | App Workshop's own Mac app, built with the factory. `make verify` fails when it falls behind the factory; files the app owns are listed under `unmanaged` in its `.apple-scaffold.json`. |
-| `tests/` | Generator contract tests (`make verify`). |
-| `vendor/`, `*_TASK.md`, `scripts/` | Copied from agent-engineering, the language-neutral layer above this factory: its standards, role packets, and repository checks. Pinned in `vendor/agent-engineering.lock`; `tooling/sync-agent-engineering.sh` refreshes them and a daily workflow opens a PR when a copied file changes. Change them upstream. |
+| `templates/`, `tooling/` | Generated files, the iOS starter, generator, checker, and planners. |
+| `docs/` | App process, compatibility, Apple guideline audit, and navigation. |
+| `scripts/` | Locally owned repository structure, token, and tracked-secret checks. |
+| `tests/` | Generation, adoption, update, security, and optional Simulator checks. |
 
-Adapted from [agent-engineering](https://github.com/benpham3206/agent-engineering) for Apple apps.
+The main CI workflow runs `make verify` on pull requests. Its manual Xcode job runs `make verify-xcode`.

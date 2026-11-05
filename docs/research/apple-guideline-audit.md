@@ -39,7 +39,7 @@ Still deliberately open: CI choice, dependency policy, and passkeys or Sign in w
 
 ## Path to a first renewing subscriber (2026-09-27)
 
-Account, agreement, tax, banking, review, subscription, payment-route, legal, acquisition, and failure-mode research lives in [app-store-to-first-subscriber/](app-store-to-first-subscriber/REPORT.md). Start with `REPORT.md`; `08_factcheck.md` overrides the raw notes where they disagree.
+Account, agreement, tax, banking, review, subscription, payment-route, legal, acquisition, and failure-mode research lives in [distribution research](https://github.com/benpham3206/distribution/tree/main/research/app-store-to-first-subscriber). Start with `REPORT.md`; `08_factcheck.md` overrides the raw notes where they disagree.
 
 ## Conditional reviews for a future app
 

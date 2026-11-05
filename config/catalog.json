@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "identities": ["playful-kinetic", "calm-precise", "dark-technical"],
-  "platforms": ["ios", "ipados", "macos", "watchos", "tvos", "visionos"],
+  "platforms": ["ios", "ipados", "macos", "watchos", "visionos"],
   "modules": [
     "accounts",
     "active-activity",

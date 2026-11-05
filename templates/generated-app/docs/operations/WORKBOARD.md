@@ -29,7 +29,7 @@ Keep one active milestone small enough to demonstrate. Move tasks only when acce
 | --- | --- | --- | --- | --- | --- |
 | 001 | First useful result | Builder | Idea | Demo on primary device | Product not chosen |
 
-States: idea, ready, active, review, done, blocked. For an agent task, fill `docs/agents/TASK-PACKET.md` with exact `May edit` paths, shared-file coordination, downstream consumers, constraints, acceptance evidence, and stop condition. Assign one owner per shared source file. Review changed behavior and actual test output before marking done.
+States: idea, ready, active, review, done, blocked. For an agent task, write a bounded assignment with exact `May edit` paths, shared-file coordination, downstream consumers, constraints, acceptance evidence, and stop condition. Assign one owner per shared source file. Review changed behavior and actual test output before marking done.
 
 ## Decisions
 

@@ -14,11 +14,11 @@ generated app + .apple-scaffold.json (template version, selection, file hashes)
 current generated app
 ```
 
-`dogfood/app-workshop/` is one generated app, committed. `make verify` fails when it falls behind the factory.
+## Ownership
 
-## Upstream
+The factory owns its generator, templates, catalog, and repository checks. `scripts/verify-repo.sh` owns the local required-file list and token policy. `scripts/security-check.sh` checks tracked secret filenames. Generated apps use `tools/readiness.py` for structure, evidence gates, and tracked-secret content checks.
 
-agent-engineering is the language-neutral layer above this factory. `tooling/sync-agent-engineering.sh` copies its standards into `vendor/` and its role packets and `scripts/` into the root; `vendor/agent-engineering.lock` pins the commit. Change those files upstream, not here.
+Use the [Principles skills](https://github.com/benpham3206/principles) for engineering method. Sales and publishing material lives in [distribution](https://github.com/benpham3206/distribution). Hosted legal templates live in [web-workshop](https://github.com/benpham3206/web-workshop/tree/main/templates/legal). `README.md` links to each moved collection.
 
 ## Layers
 
@@ -29,7 +29,7 @@ agent-engineering is the language-neutral layer above this factory. `tooling/syn
 - `platforms/` defines native presentation and input behavior for each platform.
 - `modules/` contains optional capabilities. Keep a capability independent until a real product selects it.
 - `templates/` contains generated project files; `tooling/` generates, validates, and builds troubleshooting guides.
-- `docs/` records product questions, research, decisions, release requirements, and support practices.
+- `docs/` records app construction guidance, compatibility, the Apple guideline audit, and source navigation.
 
 ## Invariants
 
