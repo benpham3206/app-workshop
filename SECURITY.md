@@ -1,6 +1,6 @@
 # Security policy
 
-The general rules are agent-engineering's `vendor/agent-engineering/standards/security.md`. The Apple rules for generated apps are `core/principles/SECURE-FAST-DEFAULTS.md`. Agent authority over App Store Connect, signing, and TestFlight is in `docs/agents/TASK-PACKET.md`.
+The Apple security rules for generated apps are in `core/principles/SECURE-FAST-DEFAULTS.md`. Signing, App Store Connect, and TestFlight actions require explicit authorization from the builder in a bounded assignment. An agent cannot expand its own authority.
 
 For this repository:
 

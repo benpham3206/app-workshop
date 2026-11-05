@@ -49,7 +49,7 @@ These gates are evidence prompts, not a demand for a large process. A one-person
 | Quality | Generate edge cases, automate repeatable checks, reproduce failures, compare screenshots. | Whether the remaining risk is acceptable. |
 | Release operations | Prepare metadata drafts, check required fields, monitor build and review status. | Account actions, pricing, submission, and public claims. |
 
-Give each task a packet using `docs/agents/TASK-PACKET.md`: **user outcome; source of truth; exact write scope; shared-file coordination; constraints; downstream consumers; acceptance evidence; expected output; stop condition.** For UI tasks, include Liquid Glass and representative-device performance checks. Ask an agent to report changed files, test results, observed limitations, and decisions requiring the builder. Keep code tasks small enough to review in one sitting. Do not let an agent declare a device test, entitlement, or App Review result from a document alone.
+Give each task a bounded assignment with these fields: **user outcome; source of truth; exact write scope; shared-file coordination; constraints; downstream consumers; acceptance evidence; expected output; stop condition.** For UI tasks, include Liquid Glass and representative-device performance checks. Ask an agent to report changed files, test results, observed limitations, and decisions requiring the builder. Keep code tasks small enough to review in one sitting. Do not let an agent declare a device test, entitlement, or App Review result from a document alone.
 
 ## Dogfood loop
 

@@ -55,7 +55,6 @@ class ScaffoldContracts(unittest.TestCase):
             self.assertTrue((output / "AGENTS.md").is_file())
             self.assertTrue((output / "PRINCIPLES.md").is_file())
             self.assertTrue((output / "docs" / "agents" / "NAVIGATION.md").is_file())
-            self.assertTrue((output / "docs" / "agents" / "TASK-PACKET.md").is_file())
             navigation = (output / "docs" / "agents" / "NAVIGATION.md").read_text()
             self.assertIn("platforms/ios/PROFILE.md", navigation)
             self.assertIn("platforms/watchos/PROFILE.md", navigation)
@@ -66,10 +65,13 @@ class ScaffoldContracts(unittest.TestCase):
             for destination in re.findall(r"\]\(([^)]+)\)", navigation):
                 if not destination.startswith("http"):
                     self.assertTrue((output / "docs" / "agents" / destination).resolve().is_file(), destination)
-            self.assertIn("May edit", (output / "docs" / "agents" / "TASK-PACKET.md").read_text())
-            # TASK-PACKET.md points to these agent-engineering role packets, so every generated app has them.
-            for packet in ("WORKER_TASK.md", "ARCHITECT_TASK.md", "REVIEWER_TASK.md", "SECURITY_REVIEWER_TASK.md", "RESEARCH_TASK.md"):
-                self.assertEqual((output / packet).read_bytes(), (ROOT / packet).read_bytes(), packet)
+            self.assertEqual(list(output.rglob("*_TASK.md")), [])
+            self.assertEqual(list(output.rglob("*PACKET.md")), [])
+            self.assertFalse((output / (".engineering" + "-manifest")).exists())
+            for path in output.rglob("*"):
+                if path.is_file():
+                    self.assertNotIn(b"agent-" + b"engineering", path.read_bytes(), path)
+            self.assertIn("https://github.com/benpham3206/principles", (output / "AGENTS.md").read_text())
             self.assertTrue((output / "docs" / "product" / "BRIEF.md").is_file())
             self.assertTrue((output / "docs" / "START-TO-SHIP.md").is_file())
             self.assertTrue((output / "docs" / "BEGINNER-GUIDE.md").is_file())
@@ -303,15 +305,6 @@ class ScaffoldContracts(unittest.TestCase):
             result = subprocess.run(["make", "test"], cwd=output, capture_output=True, text=True)
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 
-    def test_dogfood_matches_the_factory(self):
-        # The dogfood app is a committed factory output. Files it owns are listed as "unmanaged" in its manifest.
-        result = invoke("update", "--project", ROOT / "dogfood" / "app-workshop")
-        self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertIn("Would apply 0 change(s); 0 conflict(s)", result.stdout,
-                      "dogfood drifted from the factory: run make update PROJECT=dogfood/app-workshop APPLY=1, "
-                      "or add a file the app owns to unmanaged in its .apple-scaffold.json\n" + result.stdout)
-        self.assertNotRegex(result.stdout, r"(?m)^retired")
-
     def test_update_replaces_only_unedited_files(self):
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory) / "generated"
@@ -395,6 +388,12 @@ class ScaffoldContracts(unittest.TestCase):
             self.assertTrue(agents.startswith("# Existing rules\nKeep this.\n"))
             self.assertIn("## App Workshop operating layer", agents)
             self.assertTrue((project / "docs" / "product" / "BRIEF.md").is_file())
+            self.assertEqual(list(project.rglob("*_TASK.md")), [])
+            self.assertEqual(list(project.rglob("*PACKET.md")), [])
+            self.assertFalse((project / (".engineering" + "-manifest")).exists())
+            for path in project.rglob("*"):
+                if path.is_file():
+                    self.assertNotIn(b"agent-" + b"engineering", path.read_bytes(), path)
             self.assertFalse((project / "App.xcodeproj").exists())
             manifest = json.loads((project / ".apple-scaffold.json").read_text())
             self.assertEqual(manifest["unmanaged"], ["AGENTS.md", "Makefile", "README.md"])

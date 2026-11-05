@@ -1,6 +1,6 @@
 # Agent navigation: {{PROJECT_NAME}}
 
-This map is for work on this **app**. Read [AGENTS.md](../../AGENTS.md), [PRINCIPLES.md](../../PRINCIPLES.md), [README.md](../../README.md), the [product brief](../product/BRIEF.md), and the assigned [task packet](TASK-PACKET.md). The selected configuration is recorded in `.apple-scaffold.json`. A generated plan is a starting point; check what the app actually implements before describing behavior as working.
+This map is for work on this **app**. Read [AGENTS.md](../../AGENTS.md), [PRINCIPLES.md](../../PRINCIPLES.md), [README.md](../../README.md), the [product brief](../product/BRIEF.md). The selected configuration is recorded in `.apple-scaffold.json`. A generated plan is a starting point; check what the app actually implements before describing behavior as working.
 
 ## Selected scope
 
@@ -27,7 +27,7 @@ Only these selected profiles and contracts are present. If an agent needs anothe
 | Liquid Glass or speed on supported devices | `docs/quality/GLASS-AND-PERFORMANCE.md` | `docs/design/COMPONENTS.md`, selected platform profiles, `docs/quality/TEST-MATRIX.md`, actual device captures |
 | App code or stored data | `docs/engineering/ARCHITECTURE.md`, `docs/engineering/SECURE-FAST-DEFAULTS.md`, `docs/engineering/PROJECT-SETUP.md`, `App/` if it exists | module contracts, privacy plan, test matrix, troubleshooting |
 | A system surface or permission | selected `platforms/` and `modules/` paths above | `docs/privacy/PLAN.md`, `docs/TROUBLESHOOTING.md`, release checklist |
-| Who may do what, or a review | `docs/agents/TASK-PACKET.md` (roles, allowed capabilities) | `AGENTS.md` operating loop, `.github/pull_request_template.md` |
+| Who may do what, or a review | `AGENTS.md` (scope and authority) | `AGENTS.md` operating loop, `.github/pull_request_template.md` |
 | A build or behavior failure | `docs/TROUBLESHOOTING.md`, `docs/quality/TEST-MATRIX.md` | code or contract that owns the failing behavior |
 | Shipping, support, or claims | `docs/release/`, `docs/privacy/PLAN.md`, `docs/legal/`, `docs/operations/SUPPORT.md` | product brief, actual build/device evidence, current Apple rules |
 | An OS, SDK, or device change | `docs/compatibility/REVIEW.md`, selected platform profiles | `docs/design/NATIVE-REVIEW.md`, test matrix, release checklist |
@@ -57,4 +57,4 @@ Trace **entry → action → state change → visible result → recovery → re
 - Capability change: OS/API availability, entitlement, permission denial, privacy disclosure, background limits, battery, and support.
 - Payment or release change: current App Review rules, truthful copy, restore/cancel paths, test accounts, and support response.
 
-Choose relevant cases, verify them at the right level, and write remaining risks in the completion note. A document is evidence of a decision; a build, preview, Simulator run, and physical-device check prove different things. Use `docs/agents/TASK-PACKET.md` for assignment and handoff.
+Choose relevant cases, verify them at the right level, and write remaining risks in the completion note. A document is evidence of a decision; a build, preview, Simulator run, and physical-device check prove different things. Record the goal, write scope, constraints, and required evidence before assignment.

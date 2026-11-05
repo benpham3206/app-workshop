@@ -1,6 +1,6 @@
 # Agent navigation: boilerplate factory
 
-This map is for changing the **factory**. A generated app has a separate `docs/agents/NAVIGATION.md`. Start with [AGENTS.md](../../AGENTS.md) and [PRINCIPLES.md](../../PRINCIPLES.md); then read the [task packet](TASK-PACKET.md) and the smallest relevant lane below. The assigned outcome and file scope govern the work, not the size of a directory.
+This map is for changing the **factory**. A generated app has a separate `docs/agents/NAVIGATION.md`. Start with [AGENTS.md](../../AGENTS.md) and [PRINCIPLES.md](../../PRINCIPLES.md); then read the smallest relevant lane below. The assigned outcome and file scope govern the work, not the size of a directory.
 
 ## Find the right file
 
@@ -41,7 +41,7 @@ The write scope is a default, not a substitute for the user's instruction. If an
 3. **Probe the next failure.** Consider missing/old data, interruption, permission denial, accessibility, localization, device size, appearance, OS availability, privacy, battery, and support burden where relevant. Pick credible cases; do not add speculative machinery.
 4. **Change the narrowest source set.** Update a consuming contract or test when the behavior actually changes. Regenerate a snapshot only when it consumes the changed source.
 5. **Verify at the right level.** Run `make verify` for factory contracts, generate into a fresh temporary directory for output changes, and build or inspect the dogfood app for runtime changes. Report checks you could not run.
-6. **Hand off clearly.** State changed files, decision and reason, observed evidence, credible remaining risk, and the exact next owner/action. Use `TASK-PACKET.md` before assignment and its completion format afterward.
+6. **Hand off clearly.** State changed files, decision and reason, observed evidence, credible remaining risk, and the exact next owner/action. Record the goal, write scope, constraints, and required evidence before assignment.
 
 ## Quick routes
 

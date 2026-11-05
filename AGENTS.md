@@ -2,12 +2,12 @@
 
 These instructions govern work in this product-neutral Apple ecosystem boilerplate. Follow the user's current request when it sets a narrower scope. Do not infer a product, target audience, price, or supported device from the folder names.
 
-This factory is the Apple specialization of [agent-engineering](https://github.com/benpham3206/agent-engineering). Language-neutral engineering policy (how to plan, build, verify, and debug): `vendor/agent-engineering/standards/engineering.md`, with the related standards beside it. A daily workflow opens a PR when upstream changes; do not edit `vendor/` by hand. Rules in this file and its linked documents win where they are more specific.
+Use the [Principles skills](https://github.com/benpham3206/principles) for engineering method.
 
 ## Read first
 
 1. Read `GOAL.md`, `STATUS.md`, `ARCHITECTURE.md`, `PRINCIPLES.md`, `core/principles/GLASS-AND-PERFORMANCE.md`, `core/principles/SECURE-FAST-DEFAULTS.md`, `design/NATIVE-REVIEW.md`, `README.md`, `docs/agents/NAVIGATION.md`, and `docs/research/apple-guideline-audit.md`.
-2. For assigned agent work, read `docs/agents/TASK-PACKET.md`, identify the source of truth and `May edit` paths, and read the relevant folder before changing it. Use the navigation map to trace generated and runtime consumers.
+2. For assigned agent work, identify the source of truth and `May edit` paths, and read the relevant folder before changing it. Use the navigation map to trace generated and runtime consumers.
 3. Check current primary Apple Developer documentation for any API, availability, design, privacy, or App Review claim that may have changed. Record the source and check date in the affected specification.
 4. For product delivery, use `docs/process/SOLO-AI-OPERATING-SYSTEM.md` as the phase and evidence map.
 
@@ -21,10 +21,6 @@ Keep the foundation small. Do not add an app feature, dependency, entitlement, a
 
 Give agent work a bounded goal, explicit write scope, relevant files, constraints, acceptance evidence, downstream consumers, and a stop condition. One agent owns each shared source during parallel work. Report actual changed files and checks, and hand off cross-lane changes by naming the affected contract. Keep the builder's product decisions distinct from generated suggestions. A concept prompt or checklist is not evidence of a finished icon, app build, device test, or release approval.
 Apply the definitions of great, outstanding, exceptional, and timeless in `PRINCIPLES.md` to reviews. A subagent should read that file before proposing a design or implementation and report where the evidence falls short.
-
-## Roles and authority
-
-Roles come from agent-engineering: the packets `WORKER_TASK.md`, `ARCHITECT_TASK.md`, `REVIEWER_TASK.md`, `SECURITY_REVIEWER_TASK.md`, and `RESEARCH_TASK.md`, and the rules in `vendor/agent-engineering/standards/agents.md` and `security.md`. `docs/agents/TASK-PACKET.md` adds the Apple fields and authority rules (App Store Connect, signing, TestFlight). The role packets and `scripts/` are synced copies; change them in agent-engineering.
 
 ## Design and platform rules
 

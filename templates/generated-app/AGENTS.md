@@ -2,7 +2,7 @@
 
 This repository was generated as a planning scaffold. Follow the user's current request and keep product assumptions explicit.
 
-Engineering policy (how to plan, build, verify, and debug): <https://github.com/benpham3206/agent-engineering/blob/main/standards/engineering.md>. Rules in this file win where they are more specific.
+Use the [Principles skills](https://github.com/benpham3206/principles) for engineering method.
 
 Read `PRINCIPLES.md`, `docs/quality/GLASS-AND-PERFORMANCE.md`, `docs/design/NATIVE-REVIEW.md`, `docs/agents/NAVIGATION.md`, `docs/product/BRIEF.md`, `docs/design/IDENTITY.md`, `docs/ux/FLOWS.md`, `docs/ux/interactions/README.md`, applicable `docs/ux/patterns/`, and the selected platform and module profiles before implementation. Confirm current Apple API availability, Human Interface Guidelines, privacy requirements, and App Review rules for each feature. Use `docs/TROUBLESHOOTING.md` to plan likely failure checks and update it with confirmed product issues.
 
@@ -11,7 +11,7 @@ When code begins, use `docs/engineering/SECURE-FAST-DEFAULTS.md` for state owner
 Review `docs/compatibility/REVIEW.md` when the SDK, OS, hardware, or supported platform set changes.
 {{IPHONE_AGENT_RULE}}
 
-Use `docs/OPERATING-SYSTEM.md` and `docs/operations/WORKBOARD.md` for phase gates and bounded agent tasks. Before assigned work, read `docs/agents/TASK-PACKET.md` and the file routes in `docs/agents/NAVIGATION.md`. A task needs a goal, exact `May edit` paths, shared files that require coordination, constraints, downstream consumers, acceptance evidence, expected output, and stop condition. One agent owns each shared source during parallel work. Review behavior and test output before accepting it. Keep product judgment, account actions, pricing, and release decisions with the builder.
+Use `docs/OPERATING-SYSTEM.md` and `docs/operations/WORKBOARD.md` for phase gates and bounded agent tasks. Before assigned work, read the file routes in `docs/agents/NAVIGATION.md`. A task needs a goal, exact `May edit` paths, shared files that require coordination, constraints, downstream consumers, acceptance evidence, expected output, and stop condition. One agent owns each shared source during parallel work. Review behavior and test output before accepting it. Keep product judgment, account actions, pricing, and release decisions with the builder.
 Any subagent should read `PRINCIPLES.md` and report which claims were verified and which remain open. Great and outstanding are the baseline; timeless is a long-term goal, not a self-awarded label.
 
 ## Operating loop
@@ -19,7 +19,7 @@ Any subagent should read `PRINCIPLES.md` and report which claims were verified a
 Work on the current bottleneck, not the whole plan.
 
 1. Read `docs/product/BRIEF.md` for the goal, must-not-break rules, and non-goals. Read `docs/operations/WORKBOARD.md` for the current bottleneck and next step.
-2. Choose the narrowest role in `docs/agents/TASK-PACKET.md` that can move the bottleneck, and write one bounded packet.
+2. Choose one owner who can move the bottleneck, and write one bounded assignment.
 3. Make one verified change. Climb the verification ladder in `PRINCIPLES.md` only as far as the property needs.
 4. Get an independent review when risk or acceptance needs it. Nobody approves their own work.
 5. Update the workboard and `docs/quality/gates.json` when evidence, risk, or the next step changed.
