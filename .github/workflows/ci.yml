@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Generator contracts
+      - name: Factory contracts and local repository checks
         run: make verify
 
   verify-xcode:

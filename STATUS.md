@@ -1,34 +1,24 @@
 # Status
 
-Keep this file current and short.
-
 ## Current goal
 
-The factory uses agent-engineering as its upstream layer. See `GOAL.md`.
+Keep the factory focused on Apple app construction. See `GOAL.md` and the external material links in `README.md`.
 
 ## Working
 
-- Generation, adoption, and update pass `make verify`; dogfood matches the factory.
-- agent-engineering's standards, role packets, and `scripts/` sync daily through a reviewed PR.
-- `main` is protected by a ruleset.
+- Generation, adoption, conflict-safe updates, and local repository checks pass `make verify`.
+- The platform catalog contains iOS, iPadOS, macOS, watchOS, and visionOS.
+- The iOS starter, capability modules, Apple guideline audit, and release requirements remain in this repository.
+- The main CI workflow runs factory checks on pull requests and offers a manual Xcode job.
 
-## Failing or missing
+## Evidence limits
 
-- The daily sync has not yet opened a PR on its own since CI dispatch was added.
-- Dogfood gates in `docs/quality/gates.json` are all open; none has evidence files yet.
+A generated plan or passing structure check does not prove a device journey, performance, privacy compliance, or release approval. Product-specific evidence belongs to the generated app.
 
-## Current bottleneck
+## Ownership
 
-Device, glass, and performance evidence for the dogfood app.
-
-## Security and trust risks
-
-Synced agent instructions come from agent-engineering; each sync is a PR for review.
-
-## Active migration
-
-None.
+Engineering method comes from the external Principles skills. Sales, publishing research, and App Store templates belong to distribution. Hosted legal templates belong to web-workshop. The links are in `README.md`.
 
 ## Next smallest step
 
-Run the agent-engineering sync once by hand and confirm its PR gets the required `verify` check.
+Generate the selected app with `STARTER=ios`, run `make check`, and build and test it in Simulator. Record hardware evidence in that app before making device or performance claims.

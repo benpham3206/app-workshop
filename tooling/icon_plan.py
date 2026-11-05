@@ -82,7 +82,7 @@ def build_plan(brief):
         "- [ ] Refine one concept into editable, properly licensed source layers or artwork.",
         "- [ ] Check the current Apple App icons HIG and the Xcode icon workflow for every selected platform.",
         "- [ ] For iOS, iPadOS, macOS, and watchOS, evaluate Icon Composer and its appearance variants.",
-        "- [ ] For tvOS or visionOS, review the platform's layered asset-catalog requirements.",
+        "- [ ] For visionOS, review the platform's layered asset-catalog requirements.",
         "- [ ] Preview the built icon in Simulator and on relevant hardware across supported appearances.",
         "- [ ] Save the chosen source, exports, review screenshots, and decision rationale in the app repository.",
         "",

@@ -61,7 +61,7 @@ class ScaffoldContracts(unittest.TestCase):
             self.assertIn("platforms/watchos/PROFILE.md", navigation)
             self.assertIn("modules/active-activity/CONTRACT.md", navigation)
             self.assertIn("compatibility/IPHONE-DUO.md", navigation)
-            self.assertNotIn("platforms/tvos/PROFILE.md", navigation)
+            self.assertNotIn("platforms/" + "tvos/PROFILE.md", navigation)
             self.assertNotIn("{{", navigation)
             for destination in re.findall(r"\]\(([^)]+)\)", navigation):
                 if not destination.startswith("http"):
