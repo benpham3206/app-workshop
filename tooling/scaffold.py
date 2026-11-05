@@ -333,6 +333,11 @@ def update(project, apply=False):
             if relative in unmanaged:
                 continue
             current = project / relative
+            try:
+                current.resolve(strict=False).relative_to(project)
+            except (OSError, RuntimeError, ValueError):
+                plan["conflict"].append(relative)
+                continue
             if not current.exists():
                 plan["add"].append(relative)
             elif _digest(current) == digest:
