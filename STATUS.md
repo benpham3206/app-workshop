@@ -13,6 +13,8 @@ Keep the factory focused on Apple app construction. See `GOAL.md` and the extern
 
 ## Evidence limits
 
+The cleanup passed factory and generated-app checks. A generated iOS starter builds with Xcode 27 beta. Simulator test verification remains inconclusive on this host. Both iOS 18.5 and 26.5 fail to connect to the Simulator device service, including without parallel testing.
+
 A generated plan or passing structure check does not prove a device journey, performance, privacy compliance, or release approval. Product-specific evidence belongs to the generated app.
 
 ## Ownership
