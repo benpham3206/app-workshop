@@ -32,7 +32,7 @@ def load_brief(path):
     if not isinstance(brief["identity"], str) or brief["identity"] not in {"playful-kinetic", "calm-precise", "dark-technical"}:
         raise IconBriefError("Unknown identity")
     if not isinstance(brief["platforms"], list) or not brief["platforms"] or any(
-        not isinstance(item, str) or item not in {"ios", "ipados", "macos", "watchos", "tvos", "visionos"} for item in brief["platforms"]
+        not isinstance(item, str) or item not in {"ios", "ipados", "macos", "watchos", "visionos"} for item in brief["platforms"]
     ):
         raise IconBriefError("Select at least one supported platform")
     if not isinstance(brief["visual_motifs"], list) or not 1 <= len(brief["visual_motifs"]) <= 5 or any(

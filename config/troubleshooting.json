@@ -197,19 +197,6 @@
       "source": "https://developer.apple.com/documentation/usernotifications"
     },
     {
-      "id": "tvos-focus",
-      "title": "Apple TV navigation traps focus",
-      "platforms_any": ["tvos"],
-      "modules_any": [],
-      "symptom": "Remote input cannot reach a control or return from a screen.",
-      "checks": [
-        "Walk the full journey using only the remote and test initial focus, directional moves, and the back path.",
-        "Check focus order after loading, error, and empty-state changes.",
-        "Keep critical controls readable and reachable from a viewing distance."
-      ],
-      "source": "https://developer.apple.com/design/human-interface-guidelines/focus-and-selection"
-    },
-    {
       "id": "visionos-comfort",
       "title": "Vision Pro presentation is uncomfortable or misplaced",
       "platforms_any": ["visionos"],

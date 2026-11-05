@@ -37,6 +37,7 @@ class ScaffoldContracts(unittest.TestCase):
     def test_catalog_choices_have_navigable_sources(self):
         catalog = json.loads((ROOT / "config" / "catalog.json").read_text())
         schema = json.loads((ROOT / "config" / "schema" / "project.schema.json").read_text())
+        self.assertEqual(catalog["platforms"], ["ios", "ipados", "macos", "watchos", "visionos"])
         for item in catalog["identities"]:
             self.assertTrue((ROOT / "design" / "identity" / item / "README.md").is_file(), item)
         for item in catalog["platforms"]:
@@ -85,7 +86,10 @@ class ScaffoldContracts(unittest.TestCase):
             self.assertIn("Representative physical devices", (output / "docs" / "quality" / "TEST-MATRIX.md").read_text())
             self.assertTrue((output / "docs" / "quality" / "AUTOMATION.md").is_file())
             self.assertTrue((output / "docs" / "engineering" / "ECOSYSTEM.md").is_file())
-            self.assertTrue((output / "docs" / "release" / "STORE-PAGE.md").is_file())
+            self.assertTrue((output / "docs" / "release" / "CHECKLIST.md").is_file())
+            self.assertFalse((output / "docs" / "release" / "STORE-PAGE.md").exists())
+            self.assertFalse((output / "docs" / "operations" / "MEASUREMENT.md").exists())
+            self.assertFalse((output / "docs" / "legal").exists())
             self.assertTrue((output / "platforms" / "ios" / "PROFILE.md").is_file())
             self.assertTrue((output / "platforms" / "watchos" / "PROFILE.md").is_file())
             self.assertTrue((output / "modules" / "active-activity" / "CONTRACT.md").is_file())
@@ -183,6 +187,12 @@ class ScaffoldContracts(unittest.TestCase):
             self.assertIn("Relationship", text)
             self.assertIn("Distinctive geometry", text)
             self.assertIn("not final app assets", text)
+            data["platforms"] = ["tvos"]
+            brief.write_text(json.dumps(data))
+            unsupported = subprocess.run(command, cwd=output, capture_output=True, text=True, check=False)
+            self.assertEqual(unsupported.returncode, 1)
+            self.assertIn("supported platform", unsupported.stderr)
+            data["platforms"] = ["ios"]
             data["identity"] = ["playful-kinetic"]
             brief.write_text(json.dumps(data))
             malformed = subprocess.run(command, cwd=output, capture_output=True, text=True, check=False)
@@ -227,7 +237,7 @@ class ScaffoldContracts(unittest.TestCase):
             {**base, "identity": ["playful-kinetic"]},
             {**base, "platforms": ["ios", "ios"]},
             {**base, "platforms": ["watchos"]},
-            {**base, "platforms": ["tvos"], "modules": ["widgets"]},
+            {**base, "platforms": ["tvos"], "modules": []},
             {**base, "unexpected": True},
             {**base, "project": {"name": "Neutral Preview", "slug": "../escape"}},
         )

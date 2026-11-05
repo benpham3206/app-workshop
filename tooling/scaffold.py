@@ -66,8 +66,6 @@ def validate(config):
     _selection(config["modules"], CATALOG["modules"], "modules")
     if "active-activity" in config["modules"] and not {"ios", "ipados"}.intersection(config["platforms"]):
         raise ScaffoldError("active-activity needs iOS or iPadOS; a paired Watch displays it")
-    if "widgets" in config["modules"] and not {"ios", "ipados", "macos", "watchos", "visionos"}.intersection(config["platforms"]):
-        raise ScaffoldError("widgets needs a WidgetKit platform; tvOS has no WidgetKit widgets")
     return config
 
 
