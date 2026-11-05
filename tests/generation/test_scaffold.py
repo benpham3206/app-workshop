@@ -344,6 +344,31 @@ class ScaffoldContracts(unittest.TestCase):
             again = invoke("update", "--project", output)
             self.assertIn("Would apply 0 change(s); 1 conflict(s)", again.stdout)
 
+    def test_update_does_not_follow_project_symlink_outside_project(self):
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "generated"
+            self.assertEqual(invoke("generate", "--config", EXAMPLE, "--output", output).returncode, 0)
+
+            relative = "docs/product/BRIEF.md"
+            project_file = output / relative
+            external_file = Path(directory) / "outside-project.md"
+            external_file.write_text("older factory content\n")
+
+            manifest_path = output / ".apple-scaffold.json"
+            manifest = json.loads(manifest_path.read_text())
+            manifest["files"][relative] = hashlib.sha256(external_file.read_bytes()).hexdigest()
+            manifest_path.write_text(json.dumps(manifest))
+            project_file.unlink()
+            project_file.symlink_to(external_file)
+            before = external_file.read_bytes()
+
+            applied = invoke("update", "--project", output, "--apply")
+
+            self.assertEqual(applied.returncode, 0, applied.stderr)
+            self.assertTrue(external_file.read_bytes() == before, "the outside file changed")
+            self.assertIn("conflict  docs/product/BRIEF.md", applied.stdout)
+            self.assertTrue(project_file.is_symlink())
+
 
     def test_check_fails_on_tracked_signing_assets(self):
         with tempfile.TemporaryDirectory() as directory:

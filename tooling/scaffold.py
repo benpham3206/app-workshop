@@ -311,6 +311,7 @@ def update(project, apply=False):
 
     A file the builder never edited (its hash still matches the manifest) is safe to replace.
     A file the builder edited is a conflict: it is reported with a diff and never overwritten.
+    A generated path outside the project is a conflict and is never read or copied.
     Files the factory no longer produces are reported, never deleted.
     """
     project = project.resolve()
@@ -333,6 +334,11 @@ def update(project, apply=False):
             if relative in unmanaged:
                 continue
             current = project / relative
+            try:
+                current.resolve(strict=False).relative_to(project)
+            except (OSError, RuntimeError, ValueError):
+                plan["conflict"].append(relative)
+                continue
             if not current.exists():
                 plan["add"].append(relative)
             elif _digest(current) == digest:
