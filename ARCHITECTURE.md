@@ -33,12 +33,14 @@ Use the [Principles skills](https://github.com/benpham3206/principles) for engin
 
 ## Invariants
 
-1. Generation never overwrites a nonempty target. ADOPT writes nothing when a conflict exists.
+1. Generation never overwrites a nonempty target. ADOPT writes nothing when a conflict exists, and nothing outside the project.
 2. Configuration is validated as data and never executed.
 3. The same template version and selection produce the same files.
 4. Generated projects contain no factory internals (`tooling/`, `templates/`, `config/`).
-5. `update` never overwrites a file the builder edited and never deletes a file.
+5. `update` never overwrites a file the builder edited, never deletes a file, and never writes through a link. A generated path that is a link, a folder, or under a link or a file is a conflict.
 6. A starter builds, tests, and launches; optional modules stay optional.
 7. Security, privacy, accessibility, and data-loss protection are never simplified away.
 
 Protect these with the generator tests in `tests/generation/`. Extend the closest existing test; add a new one only for a new class of failure.
+
+`tests/generation/test_builder_files.py` checks invariants 1 and 5 in every project state it can build, not in chosen cases. Before you change `update`, `adopt`, or the manifest, read `.claude/skills/verify-builder-files/SKILL.md`.
