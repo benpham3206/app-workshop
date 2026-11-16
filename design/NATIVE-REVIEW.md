@@ -17,6 +17,7 @@ For every row, record **Pass**, **Needs work**, **Not applicable**, or **Pending
 | Materials | System Liquid Glass supports navigation and controls; content remains legible over changing backgrounds. | Pending | |
 | Type and layout | Semantic text styles, alignment, spacing, safe areas, long text, and Dynamic Type or platform equivalents work. | Pending | |
 | Identity | Accent, imagery, motion, haptics, and copy form a consistent selected recipe without obscuring status. | Pending | |
+| Motion | Each motion has a cause, nothing appears or leaves in one frame, a motion can be interrupted, and each resting frame shows the result. Checked in a recording per `design/motion/README.md`, with Reduce Motion on and off. | Pending | |
 | Icon | The built icon has a clear small silhouette and is checked in its real platform context and appearances. | Pending | |
 | States | Empty, loading, success, error, offline, denied permission, and interrupted flows say what happened and what to do. | Pending | |
 | Accessibility | Assistive input, labels, focus order, contrast, reduced motion, and reduced transparency preserve the job. | Pending | |

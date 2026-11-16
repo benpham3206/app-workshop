@@ -8,7 +8,7 @@ This map is for changing the **factory**. A generated app has a separate `docs/a
 | --- | --- | --- |
 | What a future app must decide | `docs/process/`, `config/process.json` | `tooling/process_guide.py`, generated `docs/BEGINNER-GUIDE.md` and `resources/process.json` |
 | Meaning of an action or its states | `ux/interactions/`, `ux/patterns/` | generated `docs/ux/interactions/`, `docs/ux/patterns/`, `docs/ux/FLOWS.md`, platform profiles, relevant modules |
-| Visual identity or icons | `design/identity/`, `design/app-icon/`, `design/NATIVE-REVIEW.md` | generated `design/identity/RECIPE.md`, `docs/design/`, `design/icon-brief.json` |
+| Visual identity, motion, or icons | `design/identity/`, `design/motion/`, `design/app-icon/`, `design/NATIVE-REVIEW.md` | generated `design/identity/RECIPE.md`, `docs/design/`, `design/icon-brief.json` |
 | Liquid Glass or device performance | `core/principles/GLASS-AND-PERFORMANCE.md` | generated `docs/quality/GLASS-AND-PERFORMANCE.md`, selected platform profiles, quality matrix, physical-device evidence |
 | Secure and responsive implementation | `core/principles/SECURE-FAST-DEFAULTS.md` | generated `docs/engineering/SECURE-FAST-DEFAULTS.md`, app state and service boundaries, privacy plan, test matrix |
 | Native platform behavior | `platforms/<platform>/README.md` | generated `platforms/<platform>/PROFILE.md`, selected module contracts, quality matrix |
