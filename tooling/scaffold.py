@@ -104,6 +104,21 @@ def _hashes(root):
     }
 
 
+def _blocked(project, relative):
+    """True when a generated path is not a plain file reached through real folders.
+
+    A link, a folder, or a file where a folder belongs is the builder's. A write there would
+    follow the link or stop halfway, so update and adopt report the path and never write it.
+    """
+    current = project / relative
+    try:
+        if current.is_symlink() or current.is_dir() or current.resolve(strict=False) != current:
+            return True
+    except (OSError, RuntimeError):
+        return True
+    return any((project / parent).is_file() for parent in Path(relative).parents)
+
+
 def _module_text(module):
     source = ROOT / "modules" / module / "README.md"
     if not source.is_file():
@@ -298,7 +313,8 @@ def update(project, apply=False):
 
     A file the builder never edited (its hash still matches the manifest) is safe to replace.
     A file the builder edited is a conflict: it is reported with a diff and never overwritten.
-    A generated path outside the project is a conflict and is never read or copied.
+    A generated path that is a link, a folder, or under a link or a file is a conflict.
+    It is never read or copied.
     Files the factory no longer produces are reported, never deleted.
     """
     project = project.resolve()
@@ -321,9 +337,7 @@ def update(project, apply=False):
             if relative in unmanaged:
                 continue
             current = project / relative
-            try:
-                current.resolve(strict=False).relative_to(project)
-            except (OSError, RuntimeError, ValueError):
+            if _blocked(project, relative):
                 plan["conflict"].append(relative)
                 continue
             if not current.exists():
@@ -355,7 +369,8 @@ def adopt(config, project):
     """Add the planning and operating layer to an existing app without touching its code.
 
     Existing README.md, Makefile, .gitignore, and .github/ files are kept. An existing AGENTS.md
-    gets the generated rules appended. Any other existing path is a conflict, and then nothing is written.
+    gets the generated rules appended. Any other existing path is a conflict, and so is a path
+    under a link or a file. On a conflict nothing is written.
     """
     project = project.resolve()
     if not project.is_dir():
@@ -370,10 +385,12 @@ def adopt(config, project):
                    if (project / relative).exists() or (project / relative).is_symlink()]
         kept = [relative for relative in present
                 if relative in KEEP_IF_PRESENT or relative.startswith(".github/")]
-        merged = [relative for relative in present if relative == MERGED and (project / relative).is_file()]
-        conflicts = sorted(set(present) - set(kept) - set(merged))
+        merged = [relative for relative in present if relative == MERGED and not _blocked(project, relative)]
+        blocked = [relative for relative in paths if relative not in present and _blocked(project, relative)]
+        conflicts = sorted((set(present) - set(kept) - set(merged)) | set(blocked))
         if conflicts:
-            raise ScaffoldError("ADOPT conflict; nothing was written. Already present: " + ", ".join(conflicts))
+            raise ScaffoldError("ADOPT conflict; nothing was written. Already present, or under a link or a file: "
+                                + ", ".join(conflicts))
         written = [relative for relative in paths if relative not in present]
         for relative in written:
             destination = project / relative

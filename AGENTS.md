@@ -13,7 +13,7 @@ Use the [Principles skills](https://github.com/benpham3206/principles) for engin
 
 ## Architecture and invariants
 
-The layers, generated-output boundary, and factory invariants are in `ARCHITECTURE.md`. Protect the invariants with the generator tests in `tests/generation/`.
+The layers, generated-output boundary, and factory invariants are in `ARCHITECTURE.md`. Protect the invariants with the generator tests in `tests/generation/`. A change to `update`, `adopt`, `_blocked`, or the manifest in `tooling/scaffold.py` follows `.claude/skills/verify-builder-files/SKILL.md`.
 
 ## Working rules
 
