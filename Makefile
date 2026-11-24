@@ -7,7 +7,7 @@ APPLY ?=
 ICON_BRIEF ?= dist/neutral-preview/design/icon-brief.json
 ICON_OUTPUT ?= dist/neutral-preview/docs/design/ICON-PLAN.md
 
-.PHONY: validate generate adopt update troubleshoot icon-plan process-guide verify verify-xcode
+.PHONY: validate generate adopt update troubleshoot icon-plan process-guide verify verify-builder-files verify-xcode
 
 validate:
 	$(PYTHON) tooling/scaffold.py validate --config "$(CONFIG)"
@@ -33,6 +33,9 @@ process-guide:
 verify:
 	$(PYTHON) -m unittest discover -s tests/generation -v
 	bash scripts/verify-repo.sh
+
+verify-builder-files:
+	$(PYTHON) -m unittest tests/generation/test_builder_files.py -v
 
 verify-xcode:
 	APP_WORKSHOP_XCODE=1 $(PYTHON) -m unittest discover -s tests/generation -v
